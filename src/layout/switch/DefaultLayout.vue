@@ -42,7 +42,7 @@ export default {
             </Navbar>
           </a-layout-header>
         </a-affix>
-        <a-layout-content class="min-h-[calc(100vh-58px)]">
+        <a-layout-content class="min-h-[calc(100vh-107px)]">
           <router-view v-slot="{ Component }">
             <transition name="fade-x">
               <component :is="Component" />

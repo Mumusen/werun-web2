@@ -6,7 +6,6 @@
  * @Author: isboyjc
  */
 import { fileURLToPath, URL } from 'node:url'
-
 import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
@@ -138,6 +137,16 @@ export default defineConfig(({ mode }) => {
         },
         autoInstall: true
       })
-    ]
+    ],
+    css: {
+      preprocessorOptions: {
+        less: {
+          modifyVars: {
+            '--color-bg-3': '#f85959'
+          },
+          javascriptEnabled: true
+        }
+      }
+    }
   }
 })

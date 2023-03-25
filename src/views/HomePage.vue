@@ -4,7 +4,8 @@
       <div
         class="w-150px h-150px rounded-[50%] bg-[var(--color-fill-1)] flex justify-center items-center"
       >
-        <icon-ri-hammer-fill class="text-52px" />
+        <Logo class="width-200px" />
+        <!-- <icon-ri-hammer-fill class="text-52px" /> -->
       </div>
     </div>
   </div>
