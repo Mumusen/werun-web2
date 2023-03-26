@@ -1,5 +1,4 @@
 @import url("./arco.css");
-
 /* 路由过渡动画 */
 .fade-x-enter-active {
   transition: all 0.3s ease-out;
@@ -13,4 +12,8 @@
 }
 .fade-x-leave-from {
   opacity: 0;
+}
+
+.bg-color-1 {
+  background-color: aquamarine;
 }

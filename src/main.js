@@ -14,6 +14,7 @@ import '@/styles/normalize.css'
 import 'uno.css'
 
 // 公共样式
+import '@arco-design/web-vue/dist/arco.less'
 import '@/assets/css/index.css'
 
 import { getConfig } from '@/config/index'

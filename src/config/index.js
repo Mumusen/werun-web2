@@ -31,7 +31,7 @@ const configSource = {
   // 服务端接口路径
   serverUrl: ENV.VITE_BASE_SERVER_URL,
   // 备案号
-  icp: '京ICP备2022xxxxxxx号',
+  icp: 'We Run',
   lang: ''
 }
 

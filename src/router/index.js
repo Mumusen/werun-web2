@@ -15,16 +15,16 @@ const router = createRouter({
       path: '/',
       name: 'SwitchLayout',
       component: () => import('@/layout/SwitchIndex.vue'),
-      redirect: '/',
+      redirect: '/dept',
       children: [
-        {
-          path: '/',
-          name: 'HomePage',
-          meta: {
-            title: 'WERUN'
-          },
-          component: () => import('@/views/HomePage.vue')
-        },
+        // {
+        //   path: '/',
+        //   name: 'HomePage',
+        //   meta: {
+        //     title: 'WERUN'
+        //   },
+        //   component: () => import('@/views/HomePage.vue')
+        // },
         ...menuRouter
       ]
     }

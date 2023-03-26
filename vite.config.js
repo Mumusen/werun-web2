@@ -40,22 +40,33 @@ export default defineConfig(({ mode }) => {
 
   return {
     base: viteEnv.VITE_BASE,
+    css: {
+      preprocessorOptions: {
+        less: {
+          modifyVars: {
+            'color-bg-3': '#000000',
+            'arcoblue-6': '#f85959'
+          },
+          javascriptEnabled: true
+        }
+      }
+    },
     server: {
       host: '0.0.0.0',
       port: '8080',
       open: true,
       // 端口占用直接退出
-      strictPort: true
+      strictPort: true,
       // 本地服务 CORS 是否开启
-      // cors: true,
-      // proxy: {
-      //   [viteEnv.VITE_BASE_URL]: {
-      //     target: viteEnv.VITE_BASE_SERVER_URL,
-      //     // 允许跨域
-      //     changeOrigin: true,
-      //     rewrite: path => path.replace(viteEnv.VITE_BASE_URL, '/')
-      //   }
-      // }
+      cors: true,
+      proxy: {
+        [viteEnv.VITE_BASE_URL]: {
+          target: viteEnv.VITE_BASE_SERVER_URL,
+          // 允许跨域
+          changeOrigin: true,
+          rewrite: path => path.replace(viteEnv.VITE_BASE_URL, '/')
+        }
+      }
     },
     build: {
       outDir: 'dist',
@@ -137,16 +148,6 @@ export default defineConfig(({ mode }) => {
         },
         autoInstall: true
       })
-    ],
-    css: {
-      preprocessorOptions: {
-        less: {
-          modifyVars: {
-            '--color-bg-3': '#f85959'
-          },
-          javascriptEnabled: true
-        }
-      }
-    }
+    ]
   }
 })

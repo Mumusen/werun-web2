@@ -9,117 +9,14 @@
  * 2023-03-24 16:18:46
 -->
 <script setup>
-const deptData = ref([
-  {
-    level: 1,
-    petd_id: 1,
-    children: [
-      {
-        id: 1,
-        name: 'Human Resource',
-        count: 3
-      },
-      {
-        id: 2,
-        name: 'Human Resource',
-        count: 3
-      },
-      {
-        id: 3,
-        name: 'Human Resource',
-        rightShow: false,
-        count: 2
-      }
-    ]
-  },
-  {
-    level: 2,
-    petd_id: 1,
-    addShowFlag: true,
-    addShow: false,
-    addVal: '',
-    children: [
-      {
-        club_id: 15,
-        count: 6,
-        teamId: 86,
-        parentId: 119,
-        name: 'Human Resource-2.1',
-        oldName: 'Human Resource-2.1',
-        childrenNum: 3,
-        editShowFlag: true,
-        editShow: false,
-        editState: 0
-      },
-      {
-        club_id: 15,
-        count: 6,
-        teamId: 86,
-        parentId: 120,
-        name: 'Human Resource-2.2',
-        oldName: 'Human Resource-2.2',
-        childrenNum: 3,
-        editShowFlag: true,
-        editShow: false,
-        editState: 0
-      },
-      {
-        club_id: 15,
-        count: 6,
-        teamId: 86,
-        parentId: 121,
-        name: 'Human Resource-2.3',
-        oldName: 'Human Resource-2.3',
-        childrenNum: 3,
-        editShowFlag: true,
-        editShow: false,
-        editState: 0
-      }
-    ]
-  },
-  {
-    level: 3,
-    petd_id: 3,
-    addShowFlag: true,
-    addShow: false,
-    addVal: '',
-    children: [
-      {
-        club_id: 16,
-        count: 6,
-        teamId: 861,
-        parentId: 1119,
-        name: 'Human Resource-3.1',
-        oldName: 'Human Resource-3.1',
-        editShowFlag: true,
-        editShow: false,
-        editState: 0
-      },
-      {
-        club_id: 16,
-        count: 6,
-        teamId: 861,
-        parentId: 1120,
-        name: 'Human Resource-3.2',
-        oldName: 'Human Resource-3.2',
-        editShowFlag: true,
-        editShow: false,
-        editState: 0
-      },
-      {
-        club_id: 16,
-        count: 6,
-        teamId: 861,
-        parentId: 1121,
-        name: 'Human Resource-3.3',
-        oldName: 'Human Resource-3.3',
-        editShowFlag: true,
-        editShow: false,
-        editState: 0
-      }
-    ]
-  }
-])
+import ajaxJson from './ajaxJson.json'
+import {
+  getClubAllDeptTree,
+  postDeptCreate,
+  postDeptDelete,
+  postDeptUpdate
+} from '@/api/dept'
+const deptData = ref([])
 const stateData = ref({
   level: -1,
   key: 0,
@@ -129,18 +26,105 @@ const stateData = ref({
   nVal: 0
 })
 const visibleShow = ref(false)
+
+// 获取部门一级列表
+const getManagingClubs = () => {
+  const data = ajaxJson.GetManagingClubs
+  let newArr = {
+    level: 1,
+    petd_id: null,
+    children: []
+  }
+  data.forEach(e => {
+    newArr.children.push({
+      id: e.id,
+      team_name: e.name,
+      rightShow: false
+    })
+  })
+  deptData.value[0] = newArr
+}
+getManagingClubs()
 // 新增-状态切换
 const deptOpenAdd = (row, t) => {
   row.addShow = t
-  console.log('row', row)
 }
-// 新增当前列部门 - API
+// 新增当前列部门 - API loading
 const deptAdd = (row, t) => {
-  row.addShow = t
   const data = toRaw(row)
-  console.log('deptAddClick', data)
+  const ajaxData = {
+    request_id: '',
+    operator_id: '1c38e7c3-1af7-4fe5-a878-a57fddf141d6',
+    dept: {
+      club_id: data.club_id,
+      name: data.addVal,
+      data_body: ''
+    }
+  }
+  if (data.team_id) ajaxData.dept.parent_id = data.team_id
+  postDeptCreate(ajaxData).then(res => {
+    if (res && res.data) {
+      const ajaxData = res.data
+      const newData = {
+        club_id: ajaxData.club_id,
+        count: 0,
+        children: [],
+        nodes: [],
+        team_id: ajaxData.id,
+        parent_id: ajaxData.parent_id,
+        team_name: ajaxData.name,
+        oldName: ajaxData.name,
+        editShowFlag: true,
+        editShow: false,
+        editState: 0
+      }
+      deptData.value[row.level].children.push(newData)
+      // 更新第一列存值
+      if (data.level === 2) {
+        updateDeptData(1, newData, data.team_id)
+      }
+      if (data.level === 3) {
+        updateDeptData(1, newData, data.parent_id, data.team_id)
+      }
+      row.addShow = t
+      row.addVal = ''
+      if (row.level > 1) {
+        console.log(deptData.value[row.level - 1])
+        deptData.value[row.level - 1].children.forEach(e => {
+          if (e.team_id === data.team_id) e.count++
+        })
+      }
+    }
+  })
 }
-
+// 本地数据更新
+const updateDeptData = (t, obj, a, b) => {
+  // t：新增or删除，obj:any, a:2；b:3
+  console.log('updateDeptData', t, obj, a, b)
+  deptData.value[1].children.forEach(e => {
+    if (e.team_id === a) {
+      if (!b) {
+        if (t) {
+          e.children.push(obj)
+        } else {
+          e.children.splice(obj, 1)
+          console.log(e.children, obj)
+        }
+        return
+      }
+      e.children.forEach((n, nk) => {
+        if (n.team_id === b) {
+          if (t) {
+            e.children[nk].nodes.push(obj)
+          } else {
+            e.children[nk].splice.push(obj)
+          }
+        }
+      })
+    }
+  })
+  console.log(toRaw(deptData.value[1]))
+}
 // 按钮显示 隐藏
 const itemMouseenter = row => {
   row.editShow = true
@@ -167,7 +151,7 @@ const deptNameTab = (row, level, key, id) => {
       return
     }
     const data = toRaw(deptData.value[state.level].children[state.key])
-    if (data.name !== data.oldName) {
+    if (data.team_name !== data.oldName) {
       visibleShow.value = true
     } else {
       deptData.value[state.level].children[state.key].editState = 0
@@ -184,7 +168,7 @@ const visibleOk = () => {
   const data = toRaw(
     deptData.value[stateData.value.level].children[stateData.value.key]
   )
-  deptUpdate({
+  postDeptUpdate({
     request_id: '',
     operator_id: '1c38e7c3-1af7-4fe5-a878-a57fddf141d6',
     club_id: data.clubId,
@@ -192,7 +176,7 @@ const visibleOk = () => {
     new_dept: {
       club_id: data.clubId,
       parent_id: data.parentId,
-      name: data.teamName,
+      name: data.team_name,
       data_body: ''
     }
   }).then(res => {
@@ -210,7 +194,7 @@ const visibleCancel = t => {
     deptData.value[stateData.value.level].children[stateData.value.key]
   if (t) {
     let data = toRaw(oldData)
-    oldData.name = data.oldName
+    oldData.team_name = data.oldName
   }
   oldData.editState = 0
   stateData.value.level = stateData.value.nLevel
@@ -221,108 +205,200 @@ const visibleCancel = t => {
   newData.editState = 1
 }
 // 提交更新
-const deptNameCheck = row => {
+const deptNameCheck = (row, level, key) => {
   const data = toRaw(row)
-  if (!data.name) {
+  console.log('deptNameCheck', data)
+  if (data.team_name === data.oldName) {
+    row.editState = 0
+    row.editShow = false
+    return
+  }
+  if (!data.team_name) {
     AMessage.warning('This is a warning message!')
     return
   }
-  console.log(data)
-  deptUpdate({
+  postDeptUpdate({
     request_id: '',
     operator_id: '1c38e7c3-1af7-4fe5-a878-a57fddf141d6',
-    club_id: data.clubId,
-    dept_id: data.teamId,
+    club_id: data.club_id,
+    dept_id: data.team_id,
     new_dept: {
-      club_id: data.clubId,
+      club_id: data.club_id,
       parent_id: data.parentId,
-      name: data.teamName,
+      name: data.team_name,
       data_body: ''
     }
   }).then(res => {
     if (res.dept && res.dept.create_time) {
-      row.oldName = row.name
+      row.oldName = row.team_name
       row.editState = 0
       row.editShow = false
+      if (level === 2) updateDeptDataName(row, key)
+      if (level === 3) updateDeptDataName(row, key, 1)
       AMessage.success('This is a success message!')
     } else {
       AMessage.error('This is a normal message!')
     }
   })
 }
-// 展开具体
-const itemClick = row => {
-  console.log('row', row)
+const updateDeptDataName = (row, key, t) => {
+  console.log('updateDeptDataName', deptData.value[1].children, toRaw(row))
+  if (t) {
+    deptData.value[1].children.forEach(e => {
+      if (e.team_id === row.delId) {
+        e.children.forEach(n => {
+          if (n.team_id === row.parent_id) {
+            n.nodes[key].team_name = row.team_name
+          }
+        })
+      }
+    })
+    return
+  }
+  deptData.value[1].children.forEach(e => {
+    if (e.team_id === row.parent_id) {
+      e.children[key].team_name = row.team_name
+    }
+  })
+  // console.log(deptData.value[1].children, row, level)
+}
+const updateDeptDataDel = (k, aId, bId, cId) => {
+  console.log('updateDeptDataDel', k, aId, bId, cId)
+  if (!bId) {
+    deptData.value[1].children.splice(k, 1)
+    return
+  }
+  deptData.value[1].children.forEach(a => {
+    if (a.team_id === aId) {
+      if (cId) {
+        a.children.forEach(b => {
+          if (b.team_id === bId) {
+            b.nodes.splice(k, 1)
+          }
+        })
+        return
+      }
+      a.children.splice(k, 1)
+    }
+  })
+  console.log('updateDeptDataDel end', deptData)
 }
 // 删除单个部门 - API
-const deptDel = (row, k) => {
-  console.log(row, k)
-  deptApiDel({
+const deptDel = (row, data, k, level) => {
+  // console.log('deptDel=>', level, toRaw(data), toRaw(deptData.value))
+  postDeptDelete({
     request_id: '',
     operator_id: '1c38e7c3-1af7-4fe5-a878-a57fddf141d6',
-    club_id: row.clubId,
-    dept_id: row.deptId
+    club_id: data.club_id,
+    dept_id: data.team_id
   }).then(res => {
     if (res.club_id) {
       row.splice(k, 1)
+      if (level > 1) {
+        if (level === 1) {
+          updateDeptDataDel(k, data.team_id)
+        }
+        if (level === 2) {
+          updateDeptDataDel(k, data.parent_id, data.team_id)
+        }
+        if (level === 3) {
+          updateDeptDataDel(k, data.delId, data.parent_id, data.team_id)
+        }
+        deptData.value[level - 1].children.forEach(e => {
+          if (e.team_id === data.parent_id) {
+            e.count--
+          }
+        })
+      }
       AMessage.success('This is a success message!')
     } else {
       AMessage.error('This is a normal message!')
     }
   })
 }
-// // 更新当前列 - API
-// const deptListUpdate = row => {
-//   console.log('deptListUpdate', row)
-// }
-// // 更新部门名称 - API
-const deptUpdate = row => {
-  console.log('deptUpdate', row)
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve({
-        dept: {
-          id: 129,
-          club_id: 15,
-          parent_id: 89,
-          name: 'test_name11',
-          data_body: '',
-          count: 0,
-          create_time: '2023-03-23T16:31:37+09:00',
-          children_count: 0,
-          parent: {
-            id: 89,
-            club_id: 15,
-            parent: 0,
-            name: 'xingki',
-            count: 5,
-            children_count: 6,
-            rgt: 21,
-            lft: 4
-          },
-          rgt: 6,
-          lft: 5,
-          depth: 1
-        }
+// // 获取下级部门 - API
+const deptGetChildren = row => {
+  getClubAllDeptTree({
+    club_id: row.id,
+    request_id: ''
+  }).then(res => {
+    console.log(res, res.club, res.nodes.nodes)
+    if (res && res.club && res.nodes.nodes) {
+      const children = res.nodes.nodes
+      const clubData = res.club
+      let newArr = {
+        level: 2,
+        club_id: clubData.id,
+        // petd_id: row.id,
+        addShowFlag: true,
+        addShow: false,
+        addVal: '',
+        children: []
+      }
+      // 更新第一列
+      row.num = children.length
+      // 更新第二列
+      if (children.length > 0) {
+        children.forEach(e => {
+          newArr.children.push({
+            club_id: e.club_id,
+            count: e.nodes.length,
+            children: e.nodes,
+            team_id: e.team_id,
+            parent_id: e.parent_id,
+            team_name: e.team_name,
+            oldName: e.team_name,
+            editShowFlag: true,
+            editShow: false,
+            editState: 0
+          })
+        })
+      }
+      deptData.value[1] = newArr
+    }
+  })
+}
+// 获取部门列
+const openChildren = (k, row) => {
+  const rowData = toRaw(row)
+  console.log('rowData', rowData)
+  let newArr = {
+    level: k + 1,
+    club_id: rowData.club_id,
+    parent_id: rowData.parent_id,
+    team_id: rowData.team_id,
+    addShowFlag: true,
+    addShow: false,
+    addVal: '',
+    children: []
+  }
+  if (rowData.children.length > 0) {
+    rowData.children.forEach(e => {
+      newArr.children.push({
+        club_id: e.club_id,
+        count: e.nodes.length,
+        children: e.nodes,
+        team_id: e.team_id,
+        parent_id: e.parent_id,
+        delId: rowData.parent_id,
+        team_name: e.team_name,
+        oldName: e.team_name,
+        editShowFlag: true,
+        editShow: false,
+        editState: 0
       })
     })
-  })
-  // deptListUpdate()
+  }
+  deptData.value[k + 1] = newArr
+  if (k == 1 && deptData.value[3]) {
+    deptData.value[3] = {
+      petd_id: null,
+      addShowFlag: false,
+      children: []
+    }
+    deptData.value[3].children = []
+  }
 }
-// // 删除部门 - API
-const deptApiDel = row => {
-  console.log('deptUpdateClick', row)
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve({ club_id: 15, parent_id: 89 })
-    })
-  })
-  // deptListUpdate()
-}
-// // 获取下级部门 - API
-// const deptGetChildren = row => {
-//   console.log('deptGetChildren', row)
-// }
 </script>
 
 <template>
@@ -333,7 +409,7 @@ const deptApiDel = row => {
         <div class="dept-box-min">
           <template v-if="deptData[0] && deptData[0].children.length > 0">
             <div
-              class="dept-box-item h-30px lh-30px"
+              class="dept-box-item h-32px lh-32px"
               v-for="(deptItem, index) in deptData[0].children"
               :key="index"
               :class="!deptItem.selectFlag ? 'dept-box-item-select' : ''"
@@ -341,21 +417,21 @@ const deptApiDel = row => {
               <div class="dept-box-item-l">
                 <div
                   class="dept-box-item-name"
-                  @click="itemClick(deptItem.id)"
+                  @click="deptGetChildren(deptItem)"
                   @mouseenter="itemMouseenter(deptItem)"
                   @mouseleave="itemMouseleave(deptItem)"
                   v-show="!deptItem.editState"
                 >
                   <i class="dept-box-item-ico"></i>
-                  {{ deptItem.name }}
+                  {{ deptItem.team_name }}
                 </div>
                 <a-input
                   v-if="deptItem.editShowFlag && deptItem.editState === 1"
-                  :default-value="deptItem.name"
+                  :default-value="deptItem.team_name"
                 />
               </div>
-              <div class="dept-box-item-r">
-                <span>{{ deptItem.count }}</span>
+              <div class="dept-box-item-r" v-if="deptItem.count">
+                <span>{{ deptItem.count || '' }}</span>
                 <template v-if="deptItem.editShowFlag">
                   <div
                     v-if="deptItem.editShow"
@@ -374,7 +450,7 @@ const deptApiDel = row => {
             type="outline"
             long
             v-if="deptData[0].addShow"
-            :disabled="deptData[0] && !deptData[0].petd_id"
+            :disabled="!deptData[0].clubId"
             @click="deptOpenAdd(deptData[0], true)"
             >+ New Dept.</a-button
           >
@@ -392,7 +468,7 @@ const deptApiDel = row => {
         <div class="dept-box-min">
           <template v-if="deptData[1] && deptData[1].children.length > 0">
             <div
-              class="dept-box-item h-30px lh-30px"
+              class="dept-box-item h-32px lh-32px"
               v-for="(deptItem, index) in deptData[1].children"
               :key="index"
               :class="!deptItem.selectFlag ? 'dept-box-item-select' : ''"
@@ -400,14 +476,18 @@ const deptApiDel = row => {
               @mouseleave="itemMouseleave(deptItem)"
             >
               <div class="dept-box-item-l">
-                <div v-show="!deptItem.editState" class="dept-box-item-name">
+                <div
+                  v-show="!deptItem.editState"
+                  class="dept-box-item-name"
+                  @click="openChildren(1, deptItem)"
+                >
                   <i class="dept-box-item-ico"></i>
-                  {{ deptItem.name }}
+                  {{ deptItem.team_name }}
                 </div>
                 <a-input
                   v-if="deptItem.editShowFlag && deptItem.editState"
-                  v-model="deptItem.name"
-                  :default-value="deptItem.name"
+                  v-model="deptItem.team_name"
+                  :default-value="deptItem.team_name"
                 />
               </div>
               <div class="dept-box-item-r">
@@ -433,20 +513,23 @@ const deptApiDel = row => {
                     />
                     <icon-ri:delete-bin-6-line
                       class="text-20px"
-                      @click="deptDel(deptData[1].children, index)"
+                      @click="deptDel(deptData[1].children, deptItem, index, 1)"
                     />
                   </div>
                 </template>
               </div>
             </div>
           </template>
+          <template v-if="deptData[1] && deptData[1].children.length === 0">
+            <div>No department yet</div>
+          </template>
         </div>
-        <div class="p-20px" v-if="deptData[1].addShowFlag">
+        <div class="p-20px" v-if="deptData[1] && deptData[1].addShowFlag">
           <a-button
             type="outline"
             long
             v-if="!deptData[1].addShow"
-            :disabled="deptData[1] && !deptData[1].petd_id"
+            :disabled="!deptData[1].club_id"
             @click="deptOpenAdd(deptData[1], true)"
             >+ New Dept.</a-button
           >
@@ -464,7 +547,7 @@ const deptApiDel = row => {
         <div class="dept-box-min">
           <template v-if="deptData[2] && deptData[2].children.length > 0">
             <div
-              class="dept-box-item h-30px lh-30px"
+              class="dept-box-item h-32px lh-32px"
               v-for="(deptItem, index) in deptData[2].children"
               :key="index"
               :class="!deptItem.selectFlag ? 'dept-box-item-select' : ''"
@@ -472,14 +555,18 @@ const deptApiDel = row => {
               @mouseleave="itemMouseleave(deptItem)"
             >
               <div class="dept-box-item-l">
-                <div v-show="!deptItem.editState" class="dept-box-item-name">
+                <div
+                  v-show="!deptItem.editState"
+                  class="dept-box-item-name"
+                  @click="openChildren(2, deptItem)"
+                >
                   <i class="dept-box-item-ico"></i>
-                  {{ deptItem.name }}
+                  {{ deptItem.team_name }}
                 </div>
                 <a-input
                   v-if="deptItem.editShowFlag && deptItem.editState"
-                  v-model="deptItem.name"
-                  :default-value="deptItem.name"
+                  v-model="deptItem.team_name"
+                  :default-value="deptItem.team_name"
                 />
               </div>
               <div class="dept-box-item-r">
@@ -501,16 +588,19 @@ const deptApiDel = row => {
                     <icon-material-symbols:check-circle-outline-rounded
                       v-if="deptItem.editState === 1"
                       class="text-20px"
-                      @click="deptNameCheck(deptItem)"
+                      @click="deptNameCheck(deptItem, 2, index)"
                     />
                     <icon-ri:delete-bin-6-line
                       class="text-20px"
-                      @click="deptDel(deptData[2].children, index)"
+                      @click="deptDel(deptData[2].children, deptItem, index, 2)"
                     />
                   </div>
                 </template>
               </div>
             </div>
+          </template>
+          <template v-if="deptData[2] && deptData[2].children.length === 0">
+            <div>No department yet</div>
           </template>
         </div>
         <div class="p-20px" v-if="deptData[2] && deptData[2].addShowFlag">
@@ -518,7 +608,7 @@ const deptApiDel = row => {
             type="outline"
             long
             v-if="!deptData[2].addShow"
-            :disabled="deptData[2] && !deptData[2].petd_id"
+            :disabled="!deptData[2].team_id"
             @click="deptOpenAdd(deptData[2], true)"
             >+ New Dept.</a-button
           >
@@ -526,7 +616,79 @@ const deptApiDel = row => {
             <a-input v-model="deptData[2].addVal" />
             <icon-material-symbols:check-circle-outline-rounded
               class="text-20px pl-10px"
-              @click="deptAdd(deptData[1], false)"
+              @click="deptAdd(deptData[2], false)"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="dept-box">
+        <div class="dept-box-title">LEVEL - 4</div>
+        <div class="dept-box-min">
+          <template v-if="deptData[3] && deptData[3].children.length > 0">
+            <div
+              class="dept-box-item h-32px lh-32px"
+              v-for="(deptItem, index) in deptData[3].children"
+              :key="index"
+              :class="!deptItem.selectFlag ? 'dept-box-item-select' : ''"
+              @mouseenter="itemMouseenter(deptItem)"
+              @mouseleave="itemMouseleave(deptItem)"
+            >
+              <div class="dept-box-item-l">
+                <div v-show="!deptItem.editState" class="dept-box-item-name">
+                  <i class="dept-box-item-ico"></i>
+                  {{ deptItem.team_name }}
+                </div>
+                <a-input
+                  v-if="deptItem.editShowFlag && deptItem.editState"
+                  v-model="deptItem.team_name"
+                  :default-value="deptItem.team_name"
+                />
+              </div>
+              <div class="dept-box-item-r">
+                <template v-if="deptItem.editShowFlag">
+                  <div
+                    v-if="deptItem.editShow || deptItem.editState"
+                    class="dept-box-btn flex items-center"
+                  >
+                    <icon-ri:edit-box-line
+                      class="text-20px"
+                      v-if="deptItem.editState === 0"
+                      @click="
+                        deptNameTab(deptItem, 1, index, deptItem.parentId)
+                      "
+                    />
+                    <icon-material-symbols:check-circle-outline-rounded
+                      v-if="deptItem.editState === 1"
+                      class="text-20px"
+                      @click="deptNameCheck(deptItem, 3, index)"
+                    />
+                    <icon-ri:delete-bin-6-line
+                      class="text-20px"
+                      @click="deptDel(deptData[3].children, deptItem, index, 3)"
+                    />
+                  </div>
+                </template>
+              </div>
+            </div>
+          </template>
+          <template v-if="deptData[3] && deptData[3].children.length === 0">
+            <div>No department yet</div>
+          </template>
+        </div>
+        <div class="p-20px" v-if="deptData[3] && deptData[3].addShowFlag">
+          <a-button
+            type="outline"
+            long
+            v-if="!deptData[3].addShow"
+            :disabled="!deptData[3].parent_id"
+            @click="deptOpenAdd(deptData[3], true)"
+            >+ New Dept.</a-button
+          >
+          <div class="flex justify-center items-center" v-else>
+            <a-input v-model="deptData[3].addVal" />
+            <icon-material-symbols:check-circle-outline-rounded
+              class="text-20px pl-10px"
+              @click="deptAdd(deptData[3], false)"
             />
           </div>
         </div>
@@ -545,23 +707,23 @@ const deptApiDel = row => {
 
 <style>
 .dept-warp {
-  border: 1px solid;
   box-sizing: border-box;
   height: calc(100vh - 138px);
+  box-shadow: 0 0 10px #0000001a;
 }
 
 .dept-box {
   display: flex;
   flex-direction: column;
   flex: 1;
-  border-right: 1px solid;
+  border-right: 1px solid rgba(233, 233, 231);
 }
-.dept-box:last-child{
+.dept-box:last-child {
   border-right: 0;
 }
 
 .dept-box-title {
-  border-bottom: 1px solid;
+  border-bottom: 1px solid rgba(233, 233, 231);
   padding: 20px;
   text-align: center;
 }
@@ -589,12 +751,16 @@ const deptApiDel = row => {
 }
 .dept-box-item-l {
   flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .dept-box-item-ico {
   float: left;
   width: 5px;
   height: 5px;
-  border: 1px solid;
+  border: 1px solid rgb(var(--arcoblue-6));
+  /* border: 1px solid rgba(110, 101, 235); */
   border-radius: 50%;
   margin: 11px 10px 0 0;
 }
@@ -602,5 +768,8 @@ const deptApiDel = row => {
   flex: 0 0 50px;
   margin-left: 10px;
   text-align: right;
+}
+.dept-box-btn {
+  color: rgb(var(--arcoblue-6));
 }
 </style>
