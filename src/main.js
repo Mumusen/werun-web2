@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-27 09:53:48
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-27 14:22:41
+ * @LastEditTime : 2023-03-27 16:22:02
  * @FilePath     : /src/main.js
  * @Description  :
  * Copyright 2023 OBKoro1, All Rights Reserved.
@@ -35,15 +35,15 @@ console.log(import.meta.env.VITE_APP_ENV)
 // 国际化
 import zhCN from '@/locales/zh-CN.js'
 import enUs from '@/locales/en-US.js'
+import jaJP from '@/locales/ja-JP.js'
 const i18n = createI18n({
   legacy: false,
   globalInjection: true,
-  locale: localStorage.getItem('lang') || 'zh-CN',
-  // fallbackLocale: 'en-US',
-  // availableLocales: ['en', 'zh-ch', 'jp'],
+  locale: localStorage.getItem('lang') || 'ja-JP',
   messages: {
     'zh-CN': zhCN,
-    'en-US': enUs
+    'en-US': enUs,
+    'ja-JP': jaJP
   }
 })
 

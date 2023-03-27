@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-14 15:12:18
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-27 12:18:53
+ * @LastEditTime : 2023-03-27 16:14:41
  * @FilePath     : /src/layout/switch/SidebarLayout.vue
  * @Description  : Layout 2
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -13,7 +13,7 @@ import IconRiLayout5Fill from '~icons/ri/layout-5-fill'
 export default {
   name: 'SidebarLayout',
   icon: IconRiLayout5Fill,
-  title: '边栏布局'
+  lang: 'sidebarLayout'
 }
 </script>
 

@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-14 15:12:18
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-27 12:15:24
+ * @LastEditTime : 2023-03-27 16:14:06
  * @FilePath     : /src/layout/switch/DefaultLayout.vue
  * @Description  : Layout 1
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -13,7 +13,7 @@ import IconRiLayoutTopFill from '~icons/ri/layout-top-fill'
 export default {
   name: 'DefaultLayout',
   icon: IconRiLayoutTopFill,
-  title: '默认布局'
+  lang: 'defaultLayout'
 }
 </script>
 
@@ -37,7 +37,7 @@ export default {
               <!-- right插槽 -->
               <template #right>
                 <SwitchMode />
-                <!-- <SwitchLocale /> -->
+                <SwitchLocale />
                 <SwitchLayout />
               </template>
             </Navbar>

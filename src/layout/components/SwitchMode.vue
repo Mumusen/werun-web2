@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-27 09:53:48
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-27 12:21:45
+ * @LastEditTime : 2023-03-27 15:57:32
  * @FilePath     : /src/layout/components/SwitchMode.vue
  * @Description  : 主题切换
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -41,7 +41,7 @@ const { next } = useCycleList(modeList.value, {
             class="text-[var(--color-text-1)] text-14px"
           />
         </template>
-        <template #default>{{ item.title }}</template>
+        <template #default> {{ $t('system.' + item.name) }}</template>
       </a-doption>
     </template>
   </a-dropdown>

@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-27 09:53:48
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-27 14:02:53
+ * @LastEditTime : 2023-03-27 16:21:49
  * @FilePath     : /src/stores/system.js
  * @Description  :系统状态
  * Copyright 2023 OBKoro1, All Rights Reserved.
@@ -41,23 +41,20 @@ export const useSystemStore = defineStore(
     const modeList = ref([
       {
         name: 'auto',
-        icon: markRaw(IconMdiThemeLightDark),
-        title: '自动模式'
+        icon: markRaw(IconMdiThemeLightDark)
       },
       {
         name: 'light',
-        icon: markRaw(IconMaterialSymbolsWbSunnyRounded),
-        title: '亮色模式'
+        icon: markRaw(IconMaterialSymbolsWbSunnyRounded)
       },
       {
         name: 'dark',
-        icon: markRaw(IconMaterialSymbolsDarkModeRounded),
-        title: '暗色模式'
+        icon: markRaw(IconMaterialSymbolsDarkModeRounded)
       }
     ])
     // 当前模式
     const currentMode = ref(null)
-    const langueMode = ref(localStorage.getItem('langue') || 'zh-CN')
+    const langueMode = ref(localStorage.getItem('langue') || 'ja-JP')
     const mode = useColorMode({
       attribute: 'arco-theme',
       emitAuto: true,
@@ -70,6 +67,11 @@ export const useSystemStore = defineStore(
 
     // 语言列表
     const langueList = ref([
+      {
+        name: 'ja-JP',
+        icon: markRaw(IcBaselineLanguage),
+        title: '日本语'
+      },
       {
         name: 'zh-CN',
         icon: markRaw(IcBaselineLanguage),

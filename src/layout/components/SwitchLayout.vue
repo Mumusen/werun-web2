@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-27 09:53:48
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-27 12:18:26
+ * @LastEditTime : 2023-03-27 16:15:02
  * @FilePath     : /src/layout/components/SwitchLayout.vue
  * @Description  : 布局切换
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -41,7 +41,7 @@ const { next } = useCycleList(switchLayoutList.value, {
             class="text-[var(--color-text-1)] text-14px"
           />
         </template>
-        <template #default>{{ item.title }}</template>
+        <template #default> {{ $t('system.' + item.lang) }}</template>
       </a-doption>
     </template>
   </a-dropdown>
