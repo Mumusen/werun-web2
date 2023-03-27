@@ -2,15 +2,16 @@
  * @Author       : linxiao
  * @Date         : 2023-03-24 16:18:46
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-24 18:20:43
+ * @LastEditTime : 2023-03-27 14:25:17
  * @FilePath     : /src/views/Dept/index.vue
  * @Description  : Dept
  * Copyright 2023 OBKoro1, All Rights Reserved. 
  * 2023-03-24 16:18:46
 -->
 <script setup>
-import ajaxJson from './ajaxJson.json'
+// import ajaxJson from './ajaxJson.json'
 import {
+  getManagingClubs,
   getClubAllDeptTree,
   postDeptCreate,
   postDeptDelete,
@@ -23,28 +24,33 @@ const stateData = ref({
   val: 0,
   nLevel: 0,
   nKey: 0,
-  nVal: 0
+  nVal: 0,
+  deptDataEnd: false,
+  loadingTwo: false
 })
 const visibleShow = ref(false)
+// onMounted(async () => {
+//   // 获取部门一级列表
+//   let { clubs } = await getManagingClubs({
+//     user_id: '1c38e7c3-1af7-4fe5-a878-a57fddf141d6',
+//     request_id: ''
+//   })
+//   if (!clubs) return
+//   let newArr = {
+//     level: 1,
+//     petd_id: null,
+//     children: []
+//   }
+//   clubs.forEach(e => {
+//     newArr.children.push({
+//       id: e.id,
+//       team_name: e.name,
+//       rightShow: false
+//     })
+//   })
+//   deptData.value[0] = newArr
+// })
 
-// 获取部门一级列表
-const getManagingClubs = () => {
-  const data = ajaxJson.GetManagingClubs
-  let newArr = {
-    level: 1,
-    petd_id: null,
-    children: []
-  }
-  data.forEach(e => {
-    newArr.children.push({
-      id: e.id,
-      team_name: e.name,
-      rightShow: false
-    })
-  })
-  deptData.value[0] = newArr
-}
-getManagingClubs()
 // 新增-状态切换
 const deptOpenAdd = (row, t) => {
   row.addShow = t
@@ -318,11 +324,11 @@ const deptDel = (row, data, k, level) => {
 }
 // // 获取下级部门 - API
 const deptGetChildren = row => {
+  stateData.value.loadingTwo = true
   getClubAllDeptTree({
     club_id: row.id,
     request_id: ''
   }).then(res => {
-    console.log(res, res.club, res.nodes.nodes)
     if (res && res.club && res.nodes.nodes) {
       const children = res.nodes.nodes
       const clubData = res.club
@@ -355,13 +361,16 @@ const deptGetChildren = row => {
         })
       }
       deptData.value[1] = newArr
+      // 更新第三、四列
+      deptData.value[2] = null
+      deptData.value[3] = null
     }
+    stateData.value.loadingTwo = false
   })
 }
 // 获取部门列
 const openChildren = (k, row) => {
   const rowData = toRaw(row)
-  console.log('rowData', rowData)
   let newArr = {
     level: k + 1,
     club_id: rowData.club_id,
@@ -388,6 +397,7 @@ const openChildren = (k, row) => {
         editState: 0
       })
     })
+    stateData.value.deptDataEnd = true
   }
   deptData.value[k + 1] = newArr
   if (k == 1 && deptData.value[3]) {
@@ -397,6 +407,7 @@ const openChildren = (k, row) => {
       children: []
     }
     deptData.value[3].children = []
+    stateData.value.deptDataEnd = false
   }
 }
 </script>
@@ -407,7 +418,16 @@ const openChildren = (k, row) => {
       <div class="dept-box">
         <div class="dept-box-title">LEVEL - 1</div>
         <div class="dept-box-min">
-          <template v-if="deptData[0] && deptData[0].children.length > 0">
+          <a-skeleton animation v-if="deptData.length === 0">
+            <a-space
+              direction="vertical"
+              :style="{ width: '100%' }"
+              size="large"
+            >
+              <a-skeleton-line :rows="5" />
+            </a-space>
+          </a-skeleton>
+          <template v-else-if="deptData[0] && deptData[0].children.length > 0">
             <div
               class="dept-box-item h-32px lh-32px"
               v-for="(deptItem, index) in deptData[0].children"
@@ -445,7 +465,10 @@ const openChildren = (k, row) => {
             </div>
           </template>
         </div>
-        <div class="p-20px" v-if="deptData[0].addShowFlag">
+        <div
+          class="p-20px"
+          v-if="deptData.length > 0 && deptData[0].addShowFlag"
+        >
           <a-button
             type="outline"
             long
@@ -466,7 +489,19 @@ const openChildren = (k, row) => {
       <div class="dept-box">
         <div class="dept-box-title">LEVEL - 2</div>
         <div class="dept-box-min">
-          <template v-if="deptData[1] && deptData[1].children.length > 0">
+          <a-skeleton
+            animation
+            v-if="deptData.length === 0 || stateData.loadingTwo"
+          >
+            <a-space
+              direction="vertical"
+              :style="{ width: '100%' }"
+              size="large"
+            >
+              <a-skeleton-line :rows="5" />
+            </a-space>
+          </a-skeleton>
+          <template v-else-if="deptData[1] && deptData[1].children.length > 0">
             <div
               class="dept-box-item h-32px lh-32px"
               v-for="(deptItem, index) in deptData[1].children"
@@ -524,7 +559,10 @@ const openChildren = (k, row) => {
             <div>No department yet</div>
           </template>
         </div>
-        <div class="p-20px" v-if="deptData[1] && deptData[1].addShowFlag">
+        <div
+          class="p-20px"
+          v-if="deptData.length > 0 && deptData[1] && deptData[1].addShowFlag"
+        >
           <a-button
             type="outline"
             long
@@ -545,7 +583,16 @@ const openChildren = (k, row) => {
       <div class="dept-box">
         <div class="dept-box-title">LEVEL - 3</div>
         <div class="dept-box-min">
-          <template v-if="deptData[2] && deptData[2].children.length > 0">
+          <a-skeleton animation v-if="deptData.length === 0">
+            <a-space
+              direction="vertical"
+              :style="{ width: '100%' }"
+              size="large"
+            >
+              <a-skeleton-line :rows="5" />
+            </a-space>
+          </a-skeleton>
+          <template v-else-if="deptData[2] && deptData[2].children.length > 0">
             <div
               class="dept-box-item h-32px lh-32px"
               v-for="(deptItem, index) in deptData[2].children"
@@ -603,7 +650,10 @@ const openChildren = (k, row) => {
             <div>No department yet</div>
           </template>
         </div>
-        <div class="p-20px" v-if="deptData[2] && deptData[2].addShowFlag">
+        <div
+          class="p-20px"
+          v-if="deptData && deptData[2] && deptData[2].addShowFlag"
+        >
           <a-button
             type="outline"
             long
@@ -624,7 +674,16 @@ const openChildren = (k, row) => {
       <div class="dept-box">
         <div class="dept-box-title">LEVEL - 4</div>
         <div class="dept-box-min">
-          <template v-if="deptData[3] && deptData[3].children.length > 0">
+          <a-skeleton animation v-if="deptData.length === 0">
+            <a-space
+              direction="vertical"
+              :style="{ width: '100%' }"
+              size="large"
+            >
+              <a-skeleton-line :rows="5" />
+            </a-space>
+          </a-skeleton>
+          <template v-else-if="deptData[3] && deptData[3].children.length > 0">
             <div
               class="dept-box-item h-32px lh-32px"
               v-for="(deptItem, index) in deptData[3].children"
@@ -671,11 +730,20 @@ const openChildren = (k, row) => {
               </div>
             </div>
           </template>
-          <template v-if="deptData[3] && deptData[3].children.length === 0">
+          <template
+            v-if="
+              deptData[3] &&
+              stateData.deptDataEnd &&
+              deptData[3].children.length === 0
+            "
+          >
             <div>No department yet</div>
           </template>
         </div>
-        <div class="p-20px" v-if="deptData[3] && deptData[3].addShowFlag">
+        <div
+          class="p-20px"
+          v-if="deptData && deptData[3] && deptData[3].addShowFlag"
+        >
           <a-button
             type="outline"
             long

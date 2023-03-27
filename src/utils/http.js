@@ -1,4 +1,14 @@
 /*
+ * @Author       : linxiao
+ * @Date         : 2023-03-27 09:53:48
+ * @LastEditors  : linxiao
+ * @LastEditTime : 2023-03-27 10:35:49
+ * @FilePath     : /src/utils/http.js
+ * @Description  :
+ * Copyright 2023 OBKoro1, All Rights Reserved.
+ * 2023-03-27 09:53:48
+ */
+/*
  * @Author: linxiao
  * @Date: 2022-07-17 00:21:02
  * @LastEditors: linxiao xiao.lin@transsion.com
@@ -25,7 +35,7 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // 可以处理token等
-    console.log('config', config)
+    // console.log('config', config)
     return config
   },
   err => {
@@ -37,7 +47,7 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
   response => {
-    console.log('xxxx', response)
+    // console.log('xxxx', response)
     // const { status } = response
     // if (status < 200 || status >= 300) {
     //   // 统一处理http错误，或者处理后抛到业务代码 TODO

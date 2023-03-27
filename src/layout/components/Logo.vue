@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-14 15:12:18
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-24 16:04:55
+ * @LastEditTime : 2023-03-27 14:23:41
  * @FilePath     : /src/layout/components/Logo.vue
  * @Description  : 
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -10,11 +10,13 @@
 -->
 <script setup>
 import logoSrc from '@/assets/img/logo_with_text.png'
+import { getCurrentInstance } from 'vue'
 const route = useRoute()
 const title = useTitle()
-
+const _this = getCurrentInstance().appContext.config.globalProperties
 watchEffect(() => {
-  title.value = route.meta.title || 'WERUN'
+  title.value = _this.$t('menu.' + route.meta.title) || 'WERUN'
+  // title.value = route.meta.title || 'WERUN'
 })
 </script>
 <template>

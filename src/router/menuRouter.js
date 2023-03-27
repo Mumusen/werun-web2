@@ -2,14 +2,13 @@
  * @Author       : linxiao
  * @Date         : 2023-03-14 15:12:18
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-24 16:19:55
+ * @LastEditTime : 2023-03-27 11:46:26
  * @FilePath     : /src/router/menuRouter.js
  * @Description  :
  * Copyright 2023 OBKoro1, All Rights Reserved.
  * 2023-03-14 15:12:18
  */
 import IconMaterialSymbolsCodeBlocksOutline from '~icons/material-symbols/code-blocks-outline'
-
 export const menuRouter = [
   // {
   //   path: 'devtools',
@@ -34,7 +33,7 @@ export const menuRouter = [
     path: 'dept',
     name: 'Dept',
     meta: {
-      title: '部门管理',
+      title: 'dept',
       icon: markRaw(IconMaterialSymbolsCodeBlocksOutline)
     },
     component: () => import('@/views/Dept/index.vue')

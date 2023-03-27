@@ -1,14 +1,20 @@
 /*
- * @LastEditors: isboyjc
- * @Description: 系统状态
- * @Date: 2022-10-03 14:24:49
- * @LastEditTime: 2022-11-24 01:10:41
- * @Author: isboyjc
+ * @Author       : linxiao
+ * @Date         : 2023-03-27 09:53:48
+ * @LastEditors  : linxiao
+ * @LastEditTime : 2023-03-27 14:02:53
+ * @FilePath     : /src/stores/system.js
+ * @Description  :系统状态
+ * Copyright 2023 OBKoro1, All Rights Reserved.
+ * 2023-03-27 09:53:48
  */
 import { getConfig } from '@/config/index'
 import IconMaterialSymbolsWbSunnyRounded from '~icons/material-symbols/wb-sunny-rounded'
 import IconMaterialSymbolsDarkModeRounded from '~icons/material-symbols/dark-mode-rounded'
 import IconMdiThemeLightDark from '~icons/mdi/theme-light-dark'
+import IcBaselineLanguage from '~icons/ic/baseline-language'
+// const { locale } = useI18n()
+
 export const useSystemStore = defineStore(
   'system',
   () => {
@@ -51,15 +57,31 @@ export const useSystemStore = defineStore(
     ])
     // 当前模式
     const currentMode = ref(null)
+    const langueMode = ref(localStorage.getItem('langue') || 'zh-CN')
     const mode = useColorMode({
       attribute: 'arco-theme',
       emitAuto: true,
       selector: 'body',
+      langue: langueMode.value?.name,
       initialValue: currentMode.value?.name,
       storageKey: null
     })
     watchEffect(() => (mode.value = currentMode.value?.name))
 
+    // 语言列表
+    const langueList = ref([
+      {
+        name: 'zh-CN',
+        icon: markRaw(IcBaselineLanguage),
+        title: '中文简体'
+      },
+      {
+        name: 'en-US',
+        icon: markRaw(IcBaselineLanguage),
+        title: 'English'
+      }
+    ])
+    watchEffect(() => (mode.value = langueMode.value?.name))
     // 初始化模式
     const initMode = () => {
       if (!currentMode.value) {
@@ -69,11 +91,20 @@ export const useSystemStore = defineStore(
           item => item.name === currentMode.value.name
         )
       }
+      if (!langueMode.value) {
+        langueMode.value = langueList.value[0]
+      } else {
+        langueMode.value = langueList.value.find(
+          item => item.name === langueMode.value.name
+        )
+      }
     }
 
     return {
       currentMode,
+      langueMode,
       modeList,
+      langueList,
       initMode,
 
       currentSwitchlayout,

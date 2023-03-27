@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-14 15:12:18
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-24 15:27:00
+ * @LastEditTime : 2023-03-27 12:15:24
  * @FilePath     : /src/layout/switch/DefaultLayout.vue
  * @Description  : Layout 1
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -37,6 +37,7 @@ export default {
               <!-- right插槽 -->
               <template #right>
                 <SwitchMode />
+                <!-- <SwitchLocale /> -->
                 <SwitchLayout />
               </template>
             </Navbar>

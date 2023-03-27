@@ -47,6 +47,22 @@ export const getUserData = function (dataObj) {
  * @param {*} dataObj
  * @returns
  */
+export const getManagingClubs = function (dataObj) {
+  return request({
+    method: 'post',
+    data: dataObj,
+    headers: {
+      'X-RPCX-ServiceMethod': Api.GetManagingClubs,
+      'X-RPCX-ServicePath': 'club'
+    }
+  })
+}
+
+/**
+ * 获取部门树-二级
+ * @param {*} dataObj
+ * @returns
+ */
 export const getClubAllDeptTree = function (dataObj) {
   return request({
     method: 'post',

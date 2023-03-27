@@ -1,3 +1,13 @@
+<!--
+ * @Author       : linxiao
+ * @Date         : 2023-03-27 09:53:48
+ * @LastEditors  : linxiao
+ * @LastEditTime : 2023-03-27 12:18:26
+ * @FilePath     : /src/layout/components/SwitchLayout.vue
+ * @Description  : 布局切换
+ * Copyright 2023 OBKoro1, All Rights Reserved. 
+ * 2023-03-27 09:53:48
+-->
 <script setup>
 import { useSystemStore } from '@/stores/system.js'
 const { currentSwitchlayout, switchLayoutList } = storeToRefs(useSystemStore())
