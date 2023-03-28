@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-24 16:18:46
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-28 16:18:24
+ * @LastEditTime : 2023-03-28 16:52:16
  * @FilePath     : /src/views/Dept/index.vue
  * @Description  : Dept
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -132,9 +132,11 @@ const updateDeptDataV2 = (row, f) => {
 // 按钮显示 隐藏
 const itemMouseenter = row => {
   row.editShow = true
+  return
 }
 const itemMouseleave = row => {
   row.editShow = false
+  return
 }
 // 编辑模式切换
 const deptNameTab = (row, level, key, id) => {
@@ -464,34 +466,25 @@ const openChildren = (k, row) => {
     deptData.value[3] = null
   }
 }
-const vClickOutside = {
-  mounted(el, binding) {
-    function eventHandler(e) {
-      console.log('vClickOutside=>', el, e)
-      if (el.contains(e.target)) {
-        return false
-      }
-      // 如果绑定的参数是函数，正常情况也应该是函数，执行
-      if (binding.value && typeof binding.value === 'function') {
-        binding.value(e)
-      }
-    }
-    // 用于销毁前注销事件监听
-    el.__click_outside__ = eventHandler
-    // 添加事件监听
-    document.addEventListener('click', eventHandler)
-  },
-  beforeUnmount(el) {
-    // 移除事件监听
-    document.removeEventListener('click', el.__click_outside__)
-    // 删除无用属性
-    delete el.__click_outside__
+// const outSideClick = (ev, k) => {
+//   if (!ev.target.closest('.dept-box-item')) {
+//     if (k === 2) {
+//       deptData.value[2] = null
+//       deptData.value[3] = null
+//     }
+//     if (k === 3) {
+//       deptData.value[3] = null
+//     }
+//   }
+// }
+const outSideClick = (ev, k) => {
+  const isDeptBoxItem = ev.target.closest('.dept-box-item')
+  const toClear = k === 2 ? [2, 3] : k === 3 ? [3] : []
+  if (!isDeptBoxItem) {
+    toClear.forEach(index => {
+      deptData.value[index] = null
+    })
   }
-}
-
-// 自定义指令参数，点击外部区域的处理函数，如关闭弹窗
-const onClickOutside = row => {
-  console.log('点击了外部 DOM', row)
 }
 </script>
 
@@ -596,7 +589,7 @@ const onClickOutside = row => {
         </div>
         <div class="dept-box">
           <div class="dept-box-title">LEVEL - 2</div>
-          <div class="dept-box-min">
+          <div class="dept-box-min" @click.capture="outSideClick($event, 2)">
             <a-skeleton
               class="p-20px"
               animation
@@ -613,60 +606,54 @@ const onClickOutside = row => {
             <template
               v-else-if="deptData[1] && deptData[1].children.length > 0"
             >
-              <div v-click-outside="onClickOutside(1)">
-                <div
-                  class="dept-box-item h-32px lh-32px"
-                  v-for="(deptItem, index) in deptData[1].children"
-                  :key="index"
-                  :class="deptItem.selectFlag ? 'dept-box-item-select' : ''"
-                  @mouseenter="itemMouseenter(deptItem)"
-                  @mouseleave="itemMouseleave(deptItem)"
-                >
-                  <div class="dept-box-item-l">
-                    <div
-                      v-show="!deptItem.editState"
-                      class="dept-box-item-name"
-                      @click="openChildren(1, deptItem)"
-                    >
-                      <i class="dept-box-item-ico"></i>
-                      {{ deptItem.team_name }}
-                    </div>
-                    <a-input
-                      v-if="deptItem.editShowFlag && deptItem.editState"
-                      v-model="deptItem.team_name"
-                      :default-value="deptItem.team_name"
+              <div
+                class="dept-box-item h-32px lh-32px"
+                v-for="(deptItem, index) in deptData[1].children"
+                :key="index"
+                :class="deptItem.selectFlag ? 'dept-box-item-select' : ''"
+                @mouseenter="itemMouseenter(deptItem)"
+                @mouseleave="itemMouseleave(deptItem)"
+              >
+                <div class="dept-box-item-l">
+                  <div
+                    v-show="!deptItem.editState"
+                    class="dept-box-item-name"
+                    @click="openChildren(1, deptItem)"
+                  >
+                    <i class="dept-box-item-ico"></i>
+                    {{ deptItem.team_name }}
+                  </div>
+                  <a-input
+                    v-if="deptItem.editShowFlag && deptItem.editState"
+                    v-model="deptItem.team_name"
+                    :default-value="deptItem.team_name"
+                  />
+                </div>
+                <div class="dept-box-item-r flex justify-center items-center">
+                  <span v-show="!deptItem.editShow && !deptItem.editState">{{
+                    deptItem.count
+                  }}</span>
+                  <template
+                    v-if="
+                      deptItem.editShowFlag &&
+                      (deptItem.editShow || deptItem.editState)
+                    "
+                  >
+                    <icon-ri:edit-box-line
+                      class="text-20px color-#746CE8"
+                      v-if="deptItem.editState === 0"
+                      @click="deptNameTab(deptItem, 1, index, deptItem.team_id)"
                     />
-                  </div>
-                  <div class="dept-box-item-r flex justify-center items-center">
-                    <span v-show="!deptItem.editShow && !deptItem.editState">{{
-                      deptItem.count
-                    }}</span>
-                    <template
-                      v-if="
-                        deptItem.editShowFlag &&
-                        (deptItem.editShow || deptItem.editState)
-                      "
-                    >
-                      <icon-ri:edit-box-line
-                        class="text-20px color-#746CE8"
-                        v-if="deptItem.editState === 0"
-                        @click="
-                          deptNameTab(deptItem, 1, index, deptItem.team_id)
-                        "
-                      />
-                      <icon-material-symbols:check-circle-outline-rounded
-                        v-if="deptItem.editState === 1"
-                        class="text-20px color-#746CE8"
-                        @click="deptNameCheck(deptItem)"
-                      />
-                      <icon-ri:delete-bin-6-line
-                        class="text-20px color-#746CE8"
-                        @click="
-                          deptDel(deptData[1].children, deptItem, index, 1)
-                        "
-                      />
-                    </template>
-                  </div>
+                    <icon-material-symbols:check-circle-outline-rounded
+                      v-if="deptItem.editState === 1"
+                      class="text-20px color-#746CE8"
+                      @click="deptNameCheck(deptItem)"
+                    />
+                    <icon-ri:delete-bin-6-line
+                      class="text-20px color-#746CE8"
+                      @click="deptDel(deptData[1].children, deptItem, index, 1)"
+                    />
+                  </template>
                 </div>
               </div>
             </template>
@@ -697,7 +684,7 @@ const onClickOutside = row => {
         </div>
         <div class="dept-box">
           <div class="dept-box-title">LEVEL - 3</div>
-          <div class="dept-box-min">
+          <div class="dept-box-min" @click.capture="outSideClick($event, 3)">
             <a-skeleton class="p-20px" animation v-if="deptData.length === 0">
               <a-space
                 direction="vertical"
@@ -968,8 +955,7 @@ const onClickOutside = row => {
 }
 .dept-box-item-r {
   flex: 0 0 50px;
-  margin-left: 10px;
-  text-align: right;
+  margin-left: 5px;
 }
 .dept-box-btn {
   color: #746ce8;
