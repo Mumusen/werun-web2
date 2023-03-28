@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-14 15:12:18
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-27 16:14:41
+ * @LastEditTime : 2023-03-28 15:47:27
  * @FilePath     : /src/layout/switch/SidebarLayout.vue
  * @Description  : Layout 2
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -22,9 +22,9 @@ export default {
 const collapsed = ref(false)
 
 // 侧边栏收缩触发事件
-const handleCollapse = (val, type) => {
-  const content = type === 'responsive' ? '响应式触发' : '点击触发'
-  console.log(`${content}侧边栏，当前状态：${val}`)
+const handleCollapse = val => {
+  // const content = type === 'responsive' ? '响应式触发' : '点击触发'
+  // console.log(`${content}侧边栏，当前状态：${val}`)
   collapsed.value = val
 }
 </script>
@@ -61,7 +61,7 @@ const handleCollapse = (val, type) => {
         </a-affix>
 
         <a-layout>
-          <a-layout-content class="min-h-[calc(100vh-107px)]">
+          <a-layout-content class="min-h-[calc(100vh-207px)]">
             <router-view v-slot="{ Component }">
               <transition name="fade-x">
                 <component :is="Component" />
@@ -86,10 +86,11 @@ const handleCollapse = (val, type) => {
   @apply w-full h-58px;
   @apply bg-[var(--color-bg-3)]  border-b-[var(--color-border-1)] border-b-solid border-b-width-1px box-border;
 }
-.sidebar-layout :deep(.arco-layout-content) {
+/* .sidebar-layout :deep(.arco-layout-content) {
   @apply flex flex-col items-center;
   @apply bg-[var(--color-bg-1)] relative;
-}
+  
+} */
 .sidebar-layout :deep(.arco-layout-footer) {
   @apply w-full flex justify-center items-center;
   @apply border-t-[var(--color-border-1)] border-t-solid border-t-width-1px box-border;

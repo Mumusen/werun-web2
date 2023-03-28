@@ -14,4 +14,8 @@ systemStore.initSwitchLayout(switchLayoutList)
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.switch-index {
+  background-color: rgb(248, 247, 250);
+}
+</style>

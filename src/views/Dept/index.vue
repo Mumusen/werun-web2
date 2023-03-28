@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-24 16:18:46
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-27 18:03:29
+ * @LastEditTime : 2023-03-28 16:18:24
  * @FilePath     : /src/views/Dept/index.vue
  * @Description  : Dept
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -13,7 +13,7 @@ import {
   getManagingClubs,
   getClubAllDeptTree,
   postDeptCreate,
-  postDeptDelete,
+  // postDeptDelete,
   postDeptUpdate
 } from '@/api/dept'
 const deptData = ref([])
@@ -22,9 +22,12 @@ const stateData = ref({
   okey: 0,
   oval: 0,
   deptDataEnd: false,
-  loadingTwo: false
+  loadingTwo: false,
+  del: {}
 })
 const visibleShow = ref(false)
+const delVisibleShow = ref(false)
+const deptLoading = ref(false)
 onMounted(async () => {
   // 获取部门一级列表
   let { clubs } = await getManagingClubs({
@@ -38,12 +41,15 @@ onMounted(async () => {
     children: []
   }
   clubs.forEach(e => {
-    newArr.children.push({
-      id: e.id,
-      selectFlag: false,
-      team_name: e.name,
-      rightShow: false
-    })
+    if (e.id === 21) {
+      newArr.children.push({
+        id: e.id,
+        selectFlag: false,
+        team_name: e.name,
+        rightShow: false
+      })
+    }
+    return
   })
   deptData.value[0] = newArr
 })
@@ -53,7 +59,8 @@ const deptOpenAdd = (row, t) => {
   row.addShow = t
 }
 // 新增当前列部门 - API loading
-const deptAdd = (row, t) => {
+const deptAdd = row => {
+  console.log('add =>', row)
   const data = toRaw(row)
   const ajaxData = {
     request_id: '',
@@ -65,68 +72,62 @@ const deptAdd = (row, t) => {
     }
   }
   if (data.team_id) ajaxData.dept.parent_id = data.team_id
+  deptLoading.value = true
   postDeptCreate(ajaxData).then(res => {
     if (res && res.data) {
-      const ajaxData = res.data
-      const newData = {
-        club_id: ajaxData.club_id,
-        count: 0,
-        children: [],
-        nodes: [],
-        team_id: ajaxData.id,
-        parent_id: ajaxData.parent_id,
-        team_name: ajaxData.name,
-        oldName: ajaxData.name,
-        editShowFlag: true,
-        editShow: false,
-        editState: 0
-      }
-      deptData.value[row.level].children.push(newData)
-      // 更新第一列存值
-      if (data.level === 2) {
-        updateDeptData(1, newData, data.team_id)
-      }
-      if (data.level === 3) {
-        updateDeptData(1, newData, data.parent_id, data.team_id)
-      }
-      row.addShow = t
-      row.addVal = ''
-      if (row.level > 1) {
-        console.log(deptData.value[row.level - 1])
-        deptData.value[row.level - 1].children.forEach(e => {
-          if (e.team_id === data.team_id) e.count++
-        })
-      }
+      updateDeptDataV2(res.data, row)
+      row.addShow = false
+      row.addVal = null
+      deptLoading.value = false
     }
   })
 }
-// 本地数据更新
-const updateDeptData = (t, obj, a, b) => {
-  // t：新增or删除，obj:any, a:2；b:3
-  console.log('updateDeptData', t, obj, a, b)
-  deptData.value[1].children.forEach(e => {
-    if (e.team_id === a) {
-      if (!b) {
-        if (t) {
-          e.children.push(obj)
-        } else {
-          e.children.splice(obj, 1)
-          console.log(e.children, obj)
-        }
-        return
-      }
-      e.children.forEach((n, nk) => {
-        if (n.team_id === b) {
-          if (t) {
-            e.children[nk].nodes.push(obj)
-          } else {
-            e.children[nk].splice.push(obj)
-          }
+// new-创建更新数组
+const updateDeptDataV2 = (row, f) => {
+  // 存值、count、选中状态?
+  const newData = {
+    club_id: row.club_id,
+    team_id: row.id,
+    count: 0,
+    children: [],
+    nodes: [],
+    team_name: row.name,
+    oldName: row.name,
+    editShowFlag: true,
+    editShow: false,
+    editState: 0
+  }
+  if (row.parent_id) {
+    // log
+    newData.parent_id = row.parent_id
+    if (!row.parent.parent) {
+      deptData.value[2].children.push(newData)
+      deptData.value[1].children.forEach(e => {
+        if (e.team_id === row.parent_id) {
+          e.count++
+          e.children.push(newData)
         }
       })
+      openChildren(2, newData)
+    } else {
+      deptData.value[3].children.push(newData)
+      deptData.value[1].children.forEach(e => {
+        if (e.team_id === f.parent_id) {
+          e.children.forEach(n => {
+            if (n.team_id === row.parent_id) {
+              n.count++
+              n.children.push(newData)
+            }
+          })
+        }
+      })
+      openChildren(3, newData)
     }
-  })
-  console.log(toRaw(deptData.value[1]))
+  } else {
+    deptData.value[1].children.push(newData)
+    openChildren(1, newData)
+  }
+  console.log('row', deptData)
 }
 // 按钮显示 隐藏
 const itemMouseenter = row => {
@@ -263,10 +264,12 @@ const updateDeptDataName = (row, key, t) => {
   })
   // console.log(deptData.value[1].children, row, level)
 }
-const updateDeptDataDel = (k, aId, bId, cId) => {
-  console.log('updateDeptDataDel', k, aId, bId, cId)
+const updateDeptDataDel = (level, k, aId, bId, cId) => {
+  console.log('updateDeptDataDel', level, k, aId, bId, cId)
   if (!bId) {
     deptData.value[1].children.splice(k, 1)
+    deptData.value[2] = null
+    deptData.value[3] = null
     return
   }
   deptData.value[1].children.forEach(a => {
@@ -282,40 +285,85 @@ const updateDeptDataDel = (k, aId, bId, cId) => {
       a.children.splice(k, 1)
     }
   })
+  if (level === 2) {
+    deptData.value[3] = null
+  }
   console.log('updateDeptDataDel end', deptData)
 }
-// 删除单个部门 - API
-const deptDel = (row, data, k, level) => {
-  // console.log('deptDel=>', level, toRaw(data), toRaw(deptData.value))
-  postDeptDelete({
+const delVisibleOk = () => {
+  console.log('delVisibleOk=> ')
+  const { row, data, k, level } = toRaw(stateData.value.del)
+  console.log('row, data, k, level', row, data, k, level)
+  console.log('ajax', {
     request_id: '',
     operator_id: '1c38e7c3-1af7-4fe5-a878-a57fddf141d6',
     club_id: data.club_id,
     dept_id: data.team_id
-  }).then(res => {
-    if (res.club_id) {
-      row.splice(k, 1)
-      if (level > 1) {
-        if (level === 1) {
-          updateDeptDataDel(k, data.team_id)
-        }
-        if (level === 2) {
-          updateDeptDataDel(k, data.parent_id, data.team_id)
-        }
-        if (level === 3) {
-          updateDeptDataDel(k, data.delId, data.parent_id, data.team_id)
-        }
-        deptData.value[level - 1].children.forEach(e => {
-          if (e.team_id === data.parent_id) {
-            e.count--
-          }
-        })
-      }
-      AMessage.success('This is a success message!')
-    } else {
-      AMessage.error('This is a normal message!')
+  })
+
+  // if (row.club_id) {
+  row.splice(k, 1)
+  if (level === 1) {
+    updateDeptDataDel(1, k, data.team_id)
+  }
+  if (level === 2) {
+    updateDeptDataDel(2, k, data.parent_id, data.team_id)
+  }
+  if (level === 3) {
+    updateDeptDataDel(3, k, data.delId, data.parent_id, data.team_id)
+  }
+  deptData.value[level - 1].children.forEach(e => {
+    if (e.team_id === data.parent_id) {
+      e.count--
     }
   })
+  // AMessage.success('This is a success message!')
+  // } else {
+  //   AMessage.error('This is a normal message!')
+  // }
+  // postDeptDelete({
+  //   request_id: '',
+  //   operator_id: '1c38e7c3-1af7-4fe5-a878-a57fddf141d6',
+  //   club_id: data.club_id,
+  //   dept_id: data.team_id
+  // }).then(res => {
+  //   if (res.club_id) {
+  //     row.splice(k, 1)
+  //     if (level > 1) {
+  //       if (level === 1) {
+  //         updateDeptDataDel(k, data.team_id)
+  //       }
+  //       if (level === 2) {
+  //         updateDeptDataDel(k, data.parent_id, data.team_id)
+  //       }
+  //       if (level === 3) {
+  //         updateDeptDataDel(k, data.delId, data.parent_id, data.team_id)
+  //       }
+  //       deptData.value[level - 1].children.forEach(e => {
+  //         if (e.team_id === data.parent_id) {
+  //           e.count--
+  //         }
+  //       })
+  //     }
+  //     AMessage.success('This is a success message!')
+  //   } else {
+  //     AMessage.error('This is a normal message!')
+  //   }
+  // })
+}
+// 取消删除
+const delVisibleCancel = () => {
+  delVisibleShow.value = false
+}
+// 删除单个部门 - 弹窗
+const deptDel = (row, data, k, level) => {
+  delVisibleShow.value = true
+  stateData.value.del = {
+    row,
+    data,
+    k,
+    level
+  }
 }
 // // 获取下级部门 - API
 const deptGetChildren = row => {
@@ -327,16 +375,18 @@ const deptGetChildren = row => {
     club_id: row.id,
     request_id: ''
   }).then(res => {
-    if (res && res.club && res.nodes.nodes) {
-      const children = res.nodes.nodes
-      const clubData = res.club
+    console.log('allDeptTree', res)
+    const { club, nodes } = res
+    if (club && nodes.nodes) {
+      const children = nodes.nodes
+      const clubData = club
       let newArr = {
         level: 2,
         club_id: clubData.id,
         // petd_id: row.id,
         addShowFlag: true,
         addShow: false,
-        addVal: '',
+        addVal: null,
         children: []
       }
       // 更新第一列
@@ -379,7 +429,7 @@ const openChildren = (k, row) => {
     team_id: rowData.team_id,
     addShowFlag: true,
     addShow: false,
-    addVal: '',
+    addVal: null,
     children: []
   }
   if (rowData.children.length > 0) {
@@ -414,62 +464,116 @@ const openChildren = (k, row) => {
     deptData.value[3] = null
   }
 }
+const vClickOutside = {
+  mounted(el, binding) {
+    function eventHandler(e) {
+      console.log('vClickOutside=>', el, e)
+      if (el.contains(e.target)) {
+        return false
+      }
+      // 如果绑定的参数是函数，正常情况也应该是函数，执行
+      if (binding.value && typeof binding.value === 'function') {
+        binding.value(e)
+      }
+    }
+    // 用于销毁前注销事件监听
+    el.__click_outside__ = eventHandler
+    // 添加事件监听
+    document.addEventListener('click', eventHandler)
+  },
+  beforeUnmount(el) {
+    // 移除事件监听
+    document.removeEventListener('click', el.__click_outside__)
+    // 删除无用属性
+    delete el.__click_outside__
+  }
+}
+
+// 自定义指令参数，点击外部区域的处理函数，如关闭弹窗
+const onClickOutside = row => {
+  console.log('点击了外部 DOM', row)
+}
 </script>
 
 <template>
   <div class="max-w-1200px w-full p-20px box-border">
-    <div class="flex dept-warp">
-      <div class="dept-box">
-        <div class="dept-box-title">LEVEL - 1</div>
-        <div class="dept-box-min">
-          <a-skeleton class="p-20px" animation v-if="deptData.length === 0">
-            <a-space
-              direction="vertical"
-              :style="{ width: '100%' }"
-              size="large"
+    <div class="header-txt">
+      <h3>Department Hierarchy</h3>
+      <p>
+        Departments are units for team division in team competitions. They are
+        usually created according to the organization of the company or group.
+        For example, if there are 10 subsidiaries and 10 departments in each
+        subsidiary, create 10 subsidiaries on level-1, and then click on each
+        subsidiary to create the departments below it.
+      </p>
+      <ul>
+        <li>
+          Departments can be created freely as units such as region/activity
+          level/close friends.
+        </li>
+        <li>
+          You can also create/edit them in WeRUN app. There are no restrictions
+          on the number of departments or levels to be created.
+        </li>
+      </ul>
+    </div>
+    <a-spin :loading="deptLoading" dot class="w-100%">
+      <div class="flex dept-warp">
+        <div class="dept-box">
+          <div class="dept-box-title">LEVEL - 1</div>
+          <div class="dept-box-min">
+            <a-skeleton class="p-20px" animation v-if="deptData.length === 0">
+              <a-space
+                direction="vertical"
+                :style="{ width: '100%' }"
+                size="large"
+              >
+                <a-skeleton-line :rows="5" />
+              </a-space>
+            </a-skeleton>
+            <template
+              v-else-if="deptData[0] && deptData[0].children.length > 0"
             >
-              <a-skeleton-line :rows="5" />
-            </a-space>
-          </a-skeleton>
-          <template v-else-if="deptData[0] && deptData[0].children.length > 0">
-            <div
-              class="dept-box-item h-32px lh-32px"
-              v-for="(deptItem, index) in deptData[0].children"
-              :key="index"
-              :class="deptItem.selectFlag ? 'dept-box-item-select' : ''"
-            >
-              <div class="dept-box-item-l">
+              <div ref="sideRef">
                 <div
-                  class="dept-box-item-name"
-                  @click="deptGetChildren(deptItem)"
-                  @mouseenter="itemMouseenter(deptItem)"
-                  @mouseleave="itemMouseleave(deptItem)"
-                  v-show="!deptItem.editState"
+                  class="dept-box-item h-32px lh-32px"
+                  v-for="(deptItem, index) in deptData[0].children"
+                  :key="index"
+                  :class="deptItem.selectFlag ? 'dept-box-item-select' : ''"
                 >
-                  <i class="dept-box-item-ico"></i>
-                  {{ deptItem.team_name }}
-                </div>
-                <a-input
-                  v-if="deptItem.editShowFlag && deptItem.editState === 1"
-                  :default-value="deptItem.team_name"
-                />
-              </div>
-              <div class="dept-box-item-r" v-if="deptItem.count">
-                <span>{{ deptItem.count || '' }}</span>
-                <template v-if="deptItem.editShowFlag">
-                  <div
-                    v-if="deptItem.editShow"
-                    class="dept-box-btn flex justify-start items-center"
-                  >
-                    <icon-ri:edit-box-line class="text-20px" />
-                    <icon-ri:delete-bin-6-line class="text-20px" />
+                  <div class="dept-box-item-l">
+                    <div
+                      class="dept-box-item-name"
+                      @click="deptGetChildren(deptItem)"
+                      @mouseenter="itemMouseenter(deptItem)"
+                      @mouseleave="itemMouseleave(deptItem)"
+                      v-show="!deptItem.editState"
+                    >
+                      <i class="dept-box-item-ico"></i>
+                      {{ deptItem.team_name }}
+                    </div>
+                    <a-input
+                      v-if="deptItem.editShowFlag && deptItem.editState === 1"
+                      :default-value="deptItem.team_name"
+                    />
                   </div>
-                </template>
+                  <div class="dept-box-item-r" v-if="deptItem.count">
+                    <span>{{ deptItem.count || '' }}</span>
+                    <template v-if="deptItem.editShowFlag">
+                      <div
+                        v-if="deptItem.editShow"
+                        class="dept-box-btn flex justify-start items-center"
+                      >
+                        <icon-ri:edit-box-line class="text-20px" />
+                        <icon-ri:delete-bin-6-line class="text-20px" />
+                      </div>
+                    </template>
+                  </div>
+                </div>
               </div>
-            </div>
-          </template>
-        </div>
-        <div
+            </template>
+          </div>
+          <!-- <div
           class="p-20px"
           v-if="deptData.length > 0 && deptData[0].addShowFlag"
         >
@@ -482,302 +586,331 @@ const openChildren = (k, row) => {
             >+ New Dept.</a-button
           >
           <div class="flex justify-center items-center" v-else>
-            <a-input v-model="deptData[0].addVal" />
+            <a-input v-model="deptData[0].addVal" default-value="New dept" />
             <icon-material-symbols:check-circle-outline-rounded
               class="text-20px pl-10px"
               @click="deptAdd(deptData[0], false)"
             />
           </div>
+        </div> -->
         </div>
-      </div>
-      <div class="dept-box">
-        <div class="dept-box-title">LEVEL - 2</div>
-        <div class="dept-box-min">
-          <a-skeleton
+        <div class="dept-box">
+          <div class="dept-box-title">LEVEL - 2</div>
+          <div class="dept-box-min">
+            <a-skeleton
+              class="p-20px"
+              animation
+              v-if="deptData.length === 0 || stateData.loadingTwo"
+            >
+              <a-space
+                direction="vertical"
+                :style="{ width: '100%' }"
+                size="large"
+              >
+                <a-skeleton-line :rows="5" />
+              </a-space>
+            </a-skeleton>
+            <template
+              v-else-if="deptData[1] && deptData[1].children.length > 0"
+            >
+              <div v-click-outside="onClickOutside(1)">
+                <div
+                  class="dept-box-item h-32px lh-32px"
+                  v-for="(deptItem, index) in deptData[1].children"
+                  :key="index"
+                  :class="deptItem.selectFlag ? 'dept-box-item-select' : ''"
+                  @mouseenter="itemMouseenter(deptItem)"
+                  @mouseleave="itemMouseleave(deptItem)"
+                >
+                  <div class="dept-box-item-l">
+                    <div
+                      v-show="!deptItem.editState"
+                      class="dept-box-item-name"
+                      @click="openChildren(1, deptItem)"
+                    >
+                      <i class="dept-box-item-ico"></i>
+                      {{ deptItem.team_name }}
+                    </div>
+                    <a-input
+                      v-if="deptItem.editShowFlag && deptItem.editState"
+                      v-model="deptItem.team_name"
+                      :default-value="deptItem.team_name"
+                    />
+                  </div>
+                  <div class="dept-box-item-r flex justify-center items-center">
+                    <span v-show="!deptItem.editShow && !deptItem.editState">{{
+                      deptItem.count
+                    }}</span>
+                    <template
+                      v-if="
+                        deptItem.editShowFlag &&
+                        (deptItem.editShow || deptItem.editState)
+                      "
+                    >
+                      <icon-ri:edit-box-line
+                        class="text-20px color-#746CE8"
+                        v-if="deptItem.editState === 0"
+                        @click="
+                          deptNameTab(deptItem, 1, index, deptItem.team_id)
+                        "
+                      />
+                      <icon-material-symbols:check-circle-outline-rounded
+                        v-if="deptItem.editState === 1"
+                        class="text-20px color-#746CE8"
+                        @click="deptNameCheck(deptItem)"
+                      />
+                      <icon-ri:delete-bin-6-line
+                        class="text-20px color-#746CE8"
+                        @click="
+                          deptDel(deptData[1].children, deptItem, index, 1)
+                        "
+                      />
+                    </template>
+                  </div>
+                </div>
+              </div>
+            </template>
+            <template v-if="deptData[1] && deptData[1].children.length === 0">
+              <div class="p-20px">No department yet</div>
+            </template>
+          </div>
+          <div
             class="p-20px"
-            animation
-            v-if="deptData.length === 0 || stateData.loadingTwo"
+            v-if="deptData.length > 0 && deptData[1] && deptData[1].addShowFlag"
           >
-            <a-space
-              direction="vertical"
-              :style="{ width: '100%' }"
-              size="large"
+            <a-button
+              type="outline"
+              long
+              v-if="!deptData[1].addShow"
+              :disabled="!deptData[1].club_id"
+              @click="deptOpenAdd(deptData[1], true)"
+              >+ New Dept.</a-button
             >
-              <a-skeleton-line :rows="5" />
-            </a-space>
-          </a-skeleton>
-          <template v-else-if="deptData[1] && deptData[1].children.length > 0">
-            <div
-              class="dept-box-item h-32px lh-32px"
-              v-for="(deptItem, index) in deptData[1].children"
-              :key="index"
-              :class="deptItem.selectFlag ? 'dept-box-item-select' : ''"
-              @mouseenter="itemMouseenter(deptItem)"
-              @mouseleave="itemMouseleave(deptItem)"
-            >
-              <div class="dept-box-item-l">
-                <div
-                  v-show="!deptItem.editState"
-                  class="dept-box-item-name"
-                  @click="openChildren(1, deptItem)"
-                >
-                  <i class="dept-box-item-ico"></i>
-                  {{ deptItem.team_name }}
-                </div>
-                <a-input
-                  v-if="deptItem.editShowFlag && deptItem.editState"
-                  v-model="deptItem.team_name"
-                  :default-value="deptItem.team_name"
-                />
-              </div>
-              <div class="dept-box-item-r flex justify-center items-center">
-                <span v-show="!deptItem.editShow && !deptItem.editState">{{
-                  deptItem.count
-                }}</span>
-                <template
-                  v-if="
-                    deptItem.editShowFlag &&
-                    (deptItem.editShow || deptItem.editState)
-                  "
-                >
-                  <icon-ri:edit-box-line
-                    class="text-20px"
-                    v-if="deptItem.editState === 0"
-                    @click="deptNameTab(deptItem, 1, index, deptItem.team_id)"
-                  />
-                  <icon-material-symbols:check-circle-outline-rounded
-                    v-if="deptItem.editState === 1"
-                    class="text-20px"
-                    @click="deptNameCheck(deptItem)"
-                  />
-                  <icon-ri:delete-bin-6-line
-                    class="text-20px"
-                    @click="deptDel(deptData[1].children, deptItem, index, 1)"
-                  />
-                </template>
-              </div>
+            <div class="flex justify-center items-center" v-else>
+              <a-input default-value="New dept" v-model="deptData[1].addVal" />
+              <icon-material-symbols:check-circle-outline-rounded
+                class="text-20px pl-10px color-#746CE8"
+                @click="deptAdd(deptData[1], false)"
+              />
             </div>
-          </template>
-          <template v-if="deptData[1] && deptData[1].children.length === 0">
-            <div class="p-20px">No department yet</div>
-          </template>
-        </div>
-        <div
-          class="p-20px"
-          v-if="deptData.length > 0 && deptData[1] && deptData[1].addShowFlag"
-        >
-          <a-button
-            type="outline"
-            long
-            v-if="!deptData[1].addShow"
-            :disabled="!deptData[1].club_id"
-            @click="deptOpenAdd(deptData[1], true)"
-            >+ New Dept.</a-button
-          >
-          <div class="flex justify-center items-center" v-else>
-            <a-input v-model="deptData[1].addVal" />
-            <icon-material-symbols:check-circle-outline-rounded
-              class="text-20px pl-10px"
-              @click="deptAdd(deptData[1], false)"
-            />
           </div>
         </div>
-      </div>
-      <div class="dept-box">
-        <div class="dept-box-title">LEVEL - 3</div>
-        <div class="dept-box-min">
-          <a-skeleton class="p-20px" animation v-if="deptData.length === 0">
-            <a-space
-              direction="vertical"
-              :style="{ width: '100%' }"
-              size="large"
+        <div class="dept-box">
+          <div class="dept-box-title">LEVEL - 3</div>
+          <div class="dept-box-min">
+            <a-skeleton class="p-20px" animation v-if="deptData.length === 0">
+              <a-space
+                direction="vertical"
+                :style="{ width: '100%' }"
+                size="large"
+              >
+                <a-skeleton-line :rows="5" />
+              </a-space>
+            </a-skeleton>
+            <template
+              v-else-if="deptData[2] && deptData[2].children.length > 0"
             >
-              <a-skeleton-line :rows="5" />
-            </a-space>
-          </a-skeleton>
-          <template v-else-if="deptData[2] && deptData[2].children.length > 0">
-            <div
-              class="dept-box-item h-32px lh-32px"
-              v-for="(deptItem, index) in deptData[2].children"
-              :key="index"
-              :class="deptItem.selectFlag ? 'dept-box-item-select' : ''"
-              @mouseenter="itemMouseenter(deptItem)"
-              @mouseleave="itemMouseleave(deptItem)"
-            >
-              <div class="dept-box-item-l">
-                <div
-                  v-show="!deptItem.editState"
-                  class="dept-box-item-name"
-                  @click="openChildren(2, deptItem)"
-                >
-                  <i class="dept-box-item-ico"></i>
-                  {{ deptItem.team_name }}
+              <div
+                class="dept-box-item h-32px lh-32px"
+                v-for="(deptItem, index) in deptData[2].children"
+                :key="index"
+                :class="deptItem.selectFlag ? 'dept-box-item-select' : ''"
+                @mouseenter="itemMouseenter(deptItem)"
+                @mouseleave="itemMouseleave(deptItem)"
+              >
+                <div class="dept-box-item-l">
+                  <div
+                    v-show="!deptItem.editState"
+                    class="dept-box-item-name"
+                    @click="openChildren(2, deptItem)"
+                  >
+                    <i class="dept-box-item-ico"></i>
+                    {{ deptItem.team_name }}
+                  </div>
+                  <a-input
+                    v-if="deptItem.editShowFlag && deptItem.editState"
+                    v-model="deptItem.team_name"
+                    :default-value="deptItem.team_name"
+                  />
                 </div>
-                <a-input
-                  v-if="deptItem.editShowFlag && deptItem.editState"
-                  v-model="deptItem.team_name"
-                  :default-value="deptItem.team_name"
-                />
-              </div>
-              <div class="dept-box-item-r flex justify-center items-center">
-                <span v-show="!deptItem.editShow && !deptItem.editState">{{
-                  deptItem.count
-                }}</span>
+                <div class="dept-box-item-r flex justify-center items-center">
+                  <span v-show="!deptItem.editShow && !deptItem.editState">{{
+                    deptItem.count
+                  }}</span>
 
-                <template
-                  v-if="
-                    deptItem.editShowFlag &&
-                    (deptItem.editShow || deptItem.editState)
-                  "
-                >
-                  <icon-ri:edit-box-line
-                    class="text-20px"
-                    v-if="deptItem.editState === 0"
-                    @click="deptNameTab(deptItem, 2, index, deptItem.team_id)"
-                  />
-                  <icon-material-symbols:check-circle-outline-rounded
-                    v-if="deptItem.editState === 1"
-                    class="text-20px"
-                    @click="deptNameCheck(deptItem, 2, index)"
-                  />
-                  <icon-ri:delete-bin-6-line
-                    class="text-20px"
-                    @click="deptDel(deptData[2].children, deptItem, index, 2)"
-                  />
-                </template>
-              </div>
-            </div>
-          </template>
-          <template v-if="deptData[2] && deptData[2].children.length === 0">
-            <div class="p-20px">No department yet</div>
-          </template>
-        </div>
-        <div
-          class="p-20px"
-          v-if="deptData && deptData[2] && deptData[2].addShowFlag"
-        >
-          <a-button
-            type="outline"
-            long
-            v-if="!deptData[2].addShow"
-            :disabled="!deptData[2].team_id"
-            @click="deptOpenAdd(deptData[2], true)"
-            >+ New Dept.</a-button
-          >
-          <div class="flex justify-center items-center" v-else>
-            <a-input v-model="deptData[2].addVal" />
-            <icon-material-symbols:check-circle-outline-rounded
-              class="text-20px pl-10px"
-              @click="deptAdd(deptData[2], false)"
-            />
-          </div>
-        </div>
-      </div>
-      <div class="dept-box">
-        <div class="dept-box-title">LEVEL - 4</div>
-        <div class="dept-box-min">
-          <a-skeleton animation class="p-20px" v-if="deptData.length === 0">
-            <a-space
-              direction="vertical"
-              :style="{ width: '100%' }"
-              size="large"
-            >
-              <a-skeleton-line :rows="5" />
-            </a-space>
-          </a-skeleton>
-          <template v-else-if="deptData[3] && deptData[3].children.length > 0">
-            <div
-              class="dept-box-item h-32px lh-32px"
-              v-for="(deptItem, index) in deptData[3].children"
-              :key="index"
-              :class="deptItem.selectFlag ? 'dept-box-item-select' : ''"
-              @mouseenter="itemMouseenter(deptItem)"
-              @mouseleave="itemMouseleave(deptItem)"
-            >
-              <div class="dept-box-item-l">
-                <div v-show="!deptItem.editState" class="dept-box-item-name">
-                  <i class="dept-box-item-ico"></i>
-                  {{ deptItem.team_name }}
+                  <template
+                    v-if="
+                      deptItem.editShowFlag &&
+                      (deptItem.editShow || deptItem.editState)
+                    "
+                  >
+                    <icon-ri:edit-box-line
+                      class="text-20px color-#746CE8"
+                      v-if="deptItem.editState === 0"
+                      @click="deptNameTab(deptItem, 2, index, deptItem.team_id)"
+                    />
+                    <icon-material-symbols:check-circle-outline-rounded
+                      v-if="deptItem.editState === 1"
+                      class="text-20px color-#746CE8"
+                      @click="deptNameCheck(deptItem, 2, index)"
+                    />
+                    <icon-ri:delete-bin-6-line
+                      class="text-20px color-#746CE8"
+                      @click="deptDel(deptData[2].children, deptItem, index, 2)"
+                    />
+                  </template>
                 </div>
-                <a-input
-                  v-if="deptItem.editShowFlag && deptItem.editState"
-                  v-model="deptItem.team_name"
-                  :default-value="deptItem.team_name"
-                />
               </div>
-              <div class="dept-box-item-r flex justify-center items-center">
-                <template
-                  v-if="
-                    deptItem.editShowFlag &&
-                    (deptItem.editShow || deptItem.editState)
-                  "
-                >
-                  <icon-ri:edit-box-line
-                    class="text-20px"
-                    v-if="deptItem.editState === 0"
-                    @click="deptNameTab(deptItem, 3, index, deptItem.team_id)"
-                  />
-                  <icon-material-symbols:check-circle-outline-rounded
-                    v-if="deptItem.editState === 1"
-                    class="text-20px"
-                    @click="deptNameCheck(deptItem, 3, index)"
-                  />
-                  <icon-ri:delete-bin-6-line
-                    class="text-20px"
-                    @click="deptDel(deptData[3].children, deptItem, index, 3)"
-                  />
-                </template>
-              </div>
+            </template>
+            <template v-if="deptData[2] && deptData[2].children.length === 0">
+              <div class="p-20px">No department yet</div>
+            </template>
+          </div>
+          <div
+            class="p-20px"
+            v-if="deptData && deptData[2] && deptData[2].addShowFlag"
+          >
+            <a-button
+              type="outline"
+              long
+              v-if="!deptData[2].addShow"
+              :disabled="!deptData[2].team_id"
+              @click="deptOpenAdd(deptData[2], true)"
+              >+ New Dept.</a-button
+            >
+            <div class="flex justify-center items-center" v-else>
+              <a-input v-model="deptData[2].addVal" default-value="New dept" />
+              <icon-material-symbols:check-circle-outline-rounded
+                class="text-20px pl-10px color-#746CE8"
+                @click="deptAdd(deptData[2], false)"
+              />
             </div>
-          </template>
-          <template
-            v-if="
-              deptData[3] &&
-              stateData.deptDataEnd &&
-              deptData[3].children.length === 0
-            "
-          >
-            <div class="p-20px">No department yet</div>
-          </template>
+          </div>
         </div>
-        <div
-          class="p-20px"
-          v-if="deptData && deptData[3] && deptData[3].addShowFlag"
-        >
-          <a-button
-            type="outline"
-            long
-            v-if="!deptData[3].addShow"
-            :disabled="!deptData[3].parent_id"
-            @click="deptOpenAdd(deptData[3], true)"
-            >+ New Dept.</a-button
+        <div class="dept-box">
+          <div class="dept-box-title">LEVEL - 4</div>
+          <div class="dept-box-min">
+            <a-skeleton animation class="p-20px" v-if="deptData.length === 0">
+              <a-space
+                direction="vertical"
+                :style="{ width: '100%' }"
+                size="large"
+              >
+                <a-skeleton-line :rows="5" />
+              </a-space>
+            </a-skeleton>
+            <template
+              v-else-if="deptData[3] && deptData[3].children.length > 0"
+            >
+              <div
+                class="dept-box-item h-32px lh-32px"
+                v-for="(deptItem, index) in deptData[3].children"
+                :key="index"
+                :class="deptItem.selectFlag ? 'dept-box-item-select' : ''"
+                @mouseenter="itemMouseenter(deptItem)"
+                @mouseleave="itemMouseleave(deptItem)"
+              >
+                <div class="dept-box-item-l">
+                  <div v-show="!deptItem.editState" class="dept-box-item-name">
+                    <i class="dept-box-item-ico"></i>
+                    {{ deptItem.team_name }}
+                  </div>
+                  <a-input
+                    v-if="deptItem.editShowFlag && deptItem.editState"
+                    v-model="deptItem.team_name"
+                    :default-value="deptItem.team_name"
+                  />
+                </div>
+                <div class="dept-box-item-r flex justify-center items-center">
+                  <template
+                    v-if="
+                      deptItem.editShowFlag &&
+                      (deptItem.editShow || deptItem.editState)
+                    "
+                  >
+                    <icon-ri:edit-box-line
+                      class="text-20px color-#746CE8"
+                      v-if="deptItem.editState === 0"
+                      @click="deptNameTab(deptItem, 3, index, deptItem.team_id)"
+                    />
+                    <icon-material-symbols:check-circle-outline-rounded
+                      v-if="deptItem.editState === 1"
+                      class="text-20px color-#746CE8"
+                      @click="deptNameCheck(deptItem, 3, index)"
+                    />
+                    <icon-ri:delete-bin-6-line
+                      class="text-20px color-#746CE8"
+                      @click="deptDel(deptData[3].children, deptItem, index, 3)"
+                    />
+                  </template>
+                </div>
+              </div>
+            </template>
+            <template
+              v-if="
+                deptData[3] &&
+                stateData.deptDataEnd &&
+                deptData[3].children.length === 0
+              "
+            >
+              <div class="p-20px">No department yet</div>
+            </template>
+          </div>
+          <div
+            class="p-20px"
+            v-if="deptData && deptData[3] && deptData[3].addShowFlag"
           >
-          <div class="flex justify-center items-center" v-else>
-            <a-input v-model="deptData[3].addVal" />
-            <icon-material-symbols:check-circle-outline-rounded
-              class="text-20px pl-10px"
-              @click="deptAdd(deptData[3], false)"
-            />
+            <a-button
+              type="outline"
+              long
+              v-if="!deptData[3].addShow"
+              :disabled="!deptData[3].parent_id"
+              @click="deptOpenAdd(deptData[3], true)"
+              >+ New Dept.</a-button
+            >
+            <div class="flex justify-center items-center" v-else>
+              <a-input v-model="deptData[3].addVal" default-value="New dept" />
+              <icon-material-symbols:check-circle-outline-rounded
+                class="text-20px pl-10px color-#746CE8"
+                @click="deptAdd(deptData[3], false)"
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </a-spin>
     <a-modal
       v-model:visible="visibleShow"
       @ok="visibleOk"
       @cancel="visibleCancel(1)"
     >
-      <template #title> Title </template>
-      <div>是否提交已变更的内容？</div>
+      <template #title> {{ $t('win.title_1') }} </template>
+      <div>{{ $t('win.text_1') }}</div>
+    </a-modal>
+    <a-modal
+      v-model:visible="delVisibleShow"
+      @ok="delVisibleOk"
+      @cancel="delVisibleCancel(1)"
+    >
+      <template #title> {{ $t('win.title_1') }} </template>
+      <div>{{ $t('win.text_2') }}</div>
     </a-modal>
   </div>
 </template>
 
 <style>
+.header-txt ul {
+  padding-left: 30px;
+}
+.header-txt ul li::marker {
+  font-size: 12px;
+}
 .dept-warp {
   box-sizing: border-box;
-  height: calc(100vh - 138px);
+  height: calc(100vh - 323px);
   box-shadow: 0 0 10px #0000001a;
+  @apply bg-[var(--color-bg-1)] relative;
+  border-radius: 5px;
 }
 
 .dept-box {
@@ -803,12 +936,12 @@ const openChildren = (k, row) => {
   cursor: pointer;
   display: flex;
   padding: 7px 10px 7px 20px;
-  border-left: 5px solid #fff;
+  border-left: 2px solid transparent;
 }
 .dept-box-item:hover,
 .dept-box-item-select {
-  color: rgb(var(--arcoblue-4));
-  border-color: rgb(var(--arcoblue-6));
+  color: #746ce8;
+  border-color: #746ce8;
   background-color: rgb(var(--arcoblue-1));
 }
 
@@ -829,7 +962,7 @@ const openChildren = (k, row) => {
   float: left;
   width: 5px;
   height: 5px;
-  border: 1px solid rgb(var(--arcoblue-6));
+  border: 1px solid #746ce8;
   border-radius: 50%;
   margin: 13px 10px 0 0;
 }
@@ -839,6 +972,6 @@ const openChildren = (k, row) => {
   text-align: right;
 }
 .dept-box-btn {
-  color: rgb(var(--arcoblue-6));
+  color: #746ce8;
 }
 </style>

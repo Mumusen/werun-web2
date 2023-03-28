@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-14 15:12:18
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-27 16:14:06
+ * @LastEditTime : 2023-03-28 10:26:38
  * @FilePath     : /src/layout/switch/DefaultLayout.vue
  * @Description  : Layout 1
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -71,7 +71,7 @@ export default {
 }
 .default-layout :deep(.arco-layout-content) {
   @apply flex flex-col items-center;
-  @apply bg-[var(--color-bg-1)] relative;
+  /* @apply bg-[var(--color-bg-1)] relative; */
 }
 .default-layout :deep(.arco-layout-footer) {
   @apply w-full flex justify-center items-center;

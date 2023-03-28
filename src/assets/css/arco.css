@@ -5,3 +5,5 @@
 .arco-scrollbar-track {
   @apply absolute z-100;
 }
+
+@arcoblue-6: #7165E8;

@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-27 09:53:48
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-27 16:22:02
+ * @LastEditTime : 2023-03-28 16:13:51
  * @FilePath     : /src/main.js
  * @Description  :
  * Copyright 2023 OBKoro1, All Rights Reserved.
@@ -46,6 +46,8 @@ const i18n = createI18n({
     'ja-JP': jaJP
   }
 })
+// 自定义事件
+// import directives from '@/utils/directives'
 
 import App from './App.vue'
 import router from './router'
@@ -59,4 +61,5 @@ pinia.use(piniaPluginPersistedstate)
 app.use(pinia)
 app.use(i18n)
 app.use(router)
+// app.use(directives)
 app.mount('#app')

@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-14 15:12:18
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-24 15:26:31
+ * @LastEditTime : 2023-03-28 10:26:19
  * @FilePath     : /src/layout/components/Footer.vue
  * @Description  : Footer
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -29,7 +29,7 @@ import { getConfig } from '@/config'
         </template>
       </a-trigger>
       <span> Copyright ⓒ 2023</span>
-      <a-link href="https://beian.miit.gov.cn/" target="_blank">
+      <a-link target="_blank">
         {{ getConfig('icp') }}
       </a-link>
     </div>

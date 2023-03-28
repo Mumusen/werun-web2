@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-27 09:53:48
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-27 10:35:49
+ * @LastEditTime : 2023-03-28 15:33:52
  * @FilePath     : /src/utils/http.js
  * @Description  :
  * Copyright 2023 OBKoro1, All Rights Reserved.
@@ -21,7 +21,7 @@ const messageDate = new Date().getTime()
 const service = axios.create({
   baseURL: '/api',
   // baseURL: import.meta.env.VITE_API_BASE_URL,
-  timeout: 30 * 1000,
+  // timeout: 30 * 1000,
   // 请求是否携带cookie
   withCredentials: true,
   headers: {

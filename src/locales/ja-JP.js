@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-27 16:17:37
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-27 17:16:15
+ * @LastEditTime : 2023-03-28 15:46:25
  * @FilePath     : /src/locales/ja-JP.js
  * @Description  : 日语
  * Copyright 2023 OBKoro1, All Rights Reserved.
@@ -20,6 +20,8 @@ export default {
     sidebarLayout: 'サイドバー'
   },
   win: {
-    text_1: '変更されたコンテンツをコミットしますか?'
+    title_1: 'タイトル',
+    text_1: '変更されたコンテンツをコミットしますか?',
+    text_2: '削除されたコンテンツを送信しますか?'
   }
 }
