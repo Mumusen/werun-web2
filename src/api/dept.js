@@ -2,14 +2,13 @@
  * @Author       : linxiao
  * @Date         : 2023-03-28 11:02:23
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-28 14:55:51
+ * @LastEditTime : 2023-03-28 17:19:16
  * @FilePath     : /src/api/dept.js
  * @Description  :
  * Copyright 2023 OBKoro1, All Rights Reserved.
  * 2023-03-28 11:02:23
  */
 import request from '@/utils/http'
-import { managingClubs } from './dept.json'
 const Api = {
   Login: 'LoginByUsername',
   GetUser: 'Get',
@@ -57,17 +56,15 @@ export const getUserData = function (dataObj) {
  * @param {*} dataObj
  * @returns
  */
-export const getManagingClubs = function () {
-  return managingClubs
-  // export const getManagingClubs = function (dataObj) {
-  // return request({
-  //   method: 'post',
-  //   data: dataObj,
-  //   headers: {
-  //     'X-RPCX-ServiceMethod': Api.GetManagingClubs,
-  //     'X-RPCX-ServicePath': 'club'
-  //   }
-  // })
+export const getManagingClubs = function (dataObj) {
+  return request({
+    method: 'post',
+    data: dataObj,
+    headers: {
+      'X-RPCX-ServiceMethod': Api.GetManagingClubs,
+      'X-RPCX-ServicePath': 'club'
+    }
+  })
 }
 
 /**
@@ -92,17 +89,6 @@ export const getClubAllDeptTree = function (dataObj) {
  * @returns
  */
 export const postDeptCreate = function (dataObj) {
-  // return {
-  //   club_id: dataObj.dept.club_id,
-  //   request_id: '',
-  //   operator_id: '',
-  //   dept: {
-  //     club_id: dataObj.dept.club_id,
-  //     parent_id: 189,
-  //     name: dataObj.dept.name,
-  //     data_body: ''
-  //   }
-  // }
   return request({
     method: 'post',
     data: dataObj,

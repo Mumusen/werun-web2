@@ -33,7 +33,8 @@ import presetUno from '@unocss/preset-uno'
 import presetAttributify from '@unocss/preset-attributify'
 // Unocss 指令插件
 import transformerDirective from '@unocss/transformer-directives'
-
+// 去除打印
+import { terser } from 'rollup-plugin-terser'
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const viteEnv = loadEnv(mode, './')
@@ -83,14 +84,6 @@ export default defineConfig(({ mode }) => {
       // sourcemap: true,
       // 规定触发警告的 chunk 大小，消除打包大小超过500kb警告
       chunkSizeWarningLimit: 2000,
-      // 禁止打印
-      minify: 'terser',
-      terserOptions: {
-        compress: {
-          drop_console: true,
-          drop_debugger: true
-        }
-      },
       // 静态资源打包到dist下的不同目录
       rollupOptions: {
         output: {
@@ -166,6 +159,13 @@ export default defineConfig(({ mode }) => {
           )
         },
         autoInstall: true
+      }),
+      terser({
+        compress: {
+          drop_console: true,
+          drop_debugger: true,
+          pure_funcs: ['debugger']
+        }
       })
     ]
   }
