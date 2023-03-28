@@ -5,17 +5,18 @@
  * @LastEditTime: 2022-11-16 02:36:37
  * @Author: isboyjc
  */
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import { menuRouter } from './menuRouter'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  mode: 'hash',
+  history: createWebHashHistory(),
   routes: [
     {
       path: '/',
       name: 'SwitchLayout',
       component: () => import('@/layout/SwitchIndex.vue'),
-      redirect: '/dept',
+      redirect: 'dept',
       children: [
         // {
         //   path: '/',

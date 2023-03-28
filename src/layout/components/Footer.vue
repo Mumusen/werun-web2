@@ -28,7 +28,7 @@ import { getConfig } from '@/config'
           <a-image width="100" :src="getConfig('me.gzhUrl')" />
         </template>
       </a-trigger>
-      <span> Copyright ⓒ 2022</span>
+      <span> Copyright ⓒ 2023</span>
       <a-link href="https://beian.miit.gov.cn/" target="_blank">
         {{ getConfig('icp') }}
       </a-link>
