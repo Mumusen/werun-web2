@@ -1,3 +1,13 @@
+<!--
+ * @Author       : linxiao
+ * @Date         : 2023-03-27 09:53:48
+ * @LastEditors  : linxiao
+ * @LastEditTime : 2023-03-28 18:05:05
+ * @FilePath     : /src/layout/SwitchIndex.vue
+ * @Description  : 模式切换
+ * Copyright 2023 OBKoro1, All Rights Reserved. 
+ * 2023-03-27 09:53:48
+-->
 <script setup>
 import switchLayoutList from '@/layout/switch/index.js'
 import { useSystemStore } from '@/stores/system'
@@ -16,6 +26,6 @@ systemStore.initSwitchLayout(switchLayoutList)
 
 <style scoped>
 .switch-index {
-  background-color: rgb(248, 247, 250);
+  background-color: #f8f7fa;
 }
 </style>

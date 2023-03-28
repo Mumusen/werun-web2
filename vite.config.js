@@ -55,8 +55,9 @@ export default defineConfig(({ mode }) => {
       preprocessorOptions: {
         less: {
           modifyVars: {
-            'color-primary-6': '#746CE8',
-            'link-6': '#746CE8'
+            'color-primary-6': '#7367F0',
+            'link-6': '#7367F0',
+            'color-text-1': '#4B465C'
           }
         }
       }
