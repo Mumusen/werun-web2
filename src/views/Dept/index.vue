@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-24 16:18:46
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-28 16:52:16
+ * @LastEditTime : 2023-03-28 17:10:24
  * @FilePath     : /src/views/Dept/index.vue
  * @Description  : Dept
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -290,7 +290,6 @@ const updateDeptDataDel = (level, k, aId, bId, cId) => {
   if (level === 2) {
     deptData.value[3] = null
   }
-  console.log('updateDeptDataDel end', deptData)
 }
 const delVisibleOk = () => {
   console.log('delVisibleOk=> ')
@@ -423,67 +422,47 @@ const deptGetChildren = row => {
 }
 // 获取部门列
 const openChildren = (k, row) => {
-  const rowData = toRaw(row)
-  let newArr = {
+  const { club_id, parent_id, team_id, children } = toRaw(row)
+  const newChildren = children.map(child => ({
+    club_id: child.club_id,
+    count: child.nodes.length,
+    children: child.nodes,
+    team_id: child.team_id,
+    parent_id: child.parent_id,
+    delId: parent_id,
+    team_name: child.team_name,
+    oldName: child.team_name,
+    editShowFlag: true,
+    editShow: false,
+    editState: 0
+  }))
+  deptData.value[k + 1] = {
     level: k + 1,
-    club_id: rowData.club_id,
-    parent_id: rowData.parent_id,
-    team_id: rowData.team_id,
+    club_id,
+    parent_id,
+    team_id,
     addShowFlag: true,
     addShow: false,
     addVal: null,
-    children: []
+    children: newChildren
   }
-  if (rowData.children.length > 0) {
-    rowData.children.forEach(e => {
-      newArr.children.push({
-        club_id: e.club_id,
-        count: e.nodes.length,
-        children: e.nodes,
-        team_id: e.team_id,
-        parent_id: e.parent_id,
-        delId: rowData.parent_id,
-        team_name: e.team_name,
-        oldName: e.team_name,
-        editShowFlag: true,
-        editShow: false,
-        editState: 0
-      })
-    })
-    stateData.value.deptDataEnd = true
-  }
-  deptData.value[k + 1] = newArr
   deptData.value[k].children.forEach(e => {
-    e.selectFlag = false
-    if (e.team_id === row.team_id) e.selectFlag = true
+    e.selectFlag = e.team_id === team_id
   })
-  if (k == 1 && deptData.value[3]) {
-    deptData.value[3] = {
-      petd_id: null,
-      addShowFlag: false,
-      children: []
-    }
+  if (k === 1 && deptData.value[3]) {
     deptData.value[3] = null
   }
+  stateData.value.deptDataEnd = true
 }
-// const outSideClick = (ev, k) => {
-//   if (!ev.target.closest('.dept-box-item')) {
-//     if (k === 2) {
-//       deptData.value[2] = null
-//       deptData.value[3] = null
-//     }
-//     if (k === 3) {
-//       deptData.value[3] = null
-//     }
-//   }
-// }
+
 const outSideClick = (ev, k) => {
-  const isDeptBoxItem = ev.target.closest('.dept-box-item')
-  const toClear = k === 2 ? [2, 3] : k === 3 ? [3] : []
-  if (!isDeptBoxItem) {
-    toClear.forEach(index => {
-      deptData.value[index] = null
-    })
+  if (!ev.target.closest('.dept-box-item')) {
+    deptData.value[k] = null
+    if (k === 2) {
+      deptData.value[1].children.forEach(e => (e.selectFlag = false))
+    } else if (k === 3) {
+      deptData.value[2].children.forEach(e => (e.selectFlag = false))
+    }
   }
 }
 </script>
@@ -786,50 +765,58 @@ const outSideClick = (ev, k) => {
                 <a-skeleton-line :rows="5" />
               </a-space>
             </a-skeleton>
-            <template
-              v-else-if="deptData[3] && deptData[3].children.length > 0"
-            >
+            <template v-else>
               <div
-                class="dept-box-item h-32px lh-32px"
-                v-for="(deptItem, index) in deptData[3].children"
+                v-for="(deptItem, index) in deptData[3]?.children || []"
                 :key="index"
-                :class="deptItem.selectFlag ? 'dept-box-item-select' : ''"
-                @mouseenter="itemMouseenter(deptItem)"
-                @mouseleave="itemMouseleave(deptItem)"
               >
-                <div class="dept-box-item-l">
-                  <div v-show="!deptItem.editState" class="dept-box-item-name">
-                    <i class="dept-box-item-ico"></i>
-                    {{ deptItem.team_name }}
+                <div
+                  class="dept-box-item h-32px lh-32px"
+                  :class="deptItem.selectFlag ? 'dept-box-item-select' : ''"
+                  @mouseenter="itemMouseenter(deptItem)"
+                  @mouseleave="itemMouseleave(deptItem)"
+                >
+                  <div class="dept-box-item-l">
+                    <div
+                      v-show="!deptItem.editState"
+                      class="dept-box-item-name"
+                    >
+                      <i class="dept-box-item-ico"></i>
+                      {{ deptItem.team_name }}
+                    </div>
+                    <a-input
+                      v-if="deptItem.editShowFlag && deptItem.editState"
+                      v-model="deptItem.team_name"
+                      :default-value="deptItem.team_name"
+                    />
                   </div>
-                  <a-input
-                    v-if="deptItem.editShowFlag && deptItem.editState"
-                    v-model="deptItem.team_name"
-                    :default-value="deptItem.team_name"
-                  />
-                </div>
-                <div class="dept-box-item-r flex justify-center items-center">
-                  <template
-                    v-if="
-                      deptItem.editShowFlag &&
-                      (deptItem.editShow || deptItem.editState)
-                    "
-                  >
-                    <icon-ri:edit-box-line
-                      class="text-20px color-#746CE8"
-                      v-if="deptItem.editState === 0"
-                      @click="deptNameTab(deptItem, 3, index, deptItem.team_id)"
-                    />
-                    <icon-material-symbols:check-circle-outline-rounded
-                      v-if="deptItem.editState === 1"
-                      class="text-20px color-#746CE8"
-                      @click="deptNameCheck(deptItem, 3, index)"
-                    />
-                    <icon-ri:delete-bin-6-line
-                      class="text-20px color-#746CE8"
-                      @click="deptDel(deptData[3].children, deptItem, index, 3)"
-                    />
-                  </template>
+                  <div class="dept-box-item-r flex justify-center items-center">
+                    <template
+                      v-if="
+                        deptItem.editShowFlag &&
+                        (deptItem.editShow || deptItem.editState)
+                      "
+                    >
+                      <icon-ri:edit-box-line
+                        class="text-20px color-#746CE8"
+                        v-if="deptItem.editState === 0"
+                        @click="
+                          deptNameTab(deptItem, 3, index, deptItem.team_id)
+                        "
+                      />
+                      <icon-material-symbols:check-circle-outline-rounded
+                        v-if="deptItem.editState === 1"
+                        class="text-20px color-#746CE8"
+                        @click="deptNameCheck(deptItem, 3, index)"
+                      />
+                      <icon-ri:delete-bin-6-line
+                        class="text-20px color-#746CE8"
+                        @click="
+                          deptDel(deptData[3].children, deptItem, index, 3)
+                        "
+                      />
+                    </template>
+                  </div>
                 </div>
               </div>
             </template>

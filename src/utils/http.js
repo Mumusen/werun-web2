@@ -2,18 +2,11 @@
  * @Author       : linxiao
  * @Date         : 2023-03-27 09:53:48
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-28 15:33:52
+ * @LastEditTime : 2023-03-28 17:10:49
  * @FilePath     : /src/utils/http.js
  * @Description  :
  * Copyright 2023 OBKoro1, All Rights Reserved.
  * 2023-03-27 09:53:48
- */
-/*
- * @Author: linxiao
- * @Date: 2022-07-17 00:21:02
- * @LastEditors: linxiao xiao.lin@transsion.com
- * @LastEditTime: 2023-03-23 18:29:19
- * @FilePath: /vue3-ts-vite/src/utils/http/index.ts
  */
 import axios from 'axios'
 
