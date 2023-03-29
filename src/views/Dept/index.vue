@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-24 16:18:46
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-28 18:27:24
+ * @LastEditTime : 2023-03-29 11:26:23
  * @FilePath     : /src/views/Dept/index.vue
  * @Description  : Dept
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -13,7 +13,7 @@ import {
   getManagingClubs,
   getClubAllDeptTree,
   postDeptCreate,
-  // postDeptDelete,
+  postDeptDelete,
   postDeptUpdate
 } from '@/api/dept'
 const deptData = ref([])
@@ -52,6 +52,14 @@ onMounted(async () => {
     return
   })
   deptData.value[0] = newArr
+  deptGetChildren({
+    editShow: false,
+    id: 21,
+    num: 9,
+    rightShow: false,
+    selectFlag: true,
+    team_name: '無効グループ'
+  })
 })
 
 // 新增-状态切换
@@ -269,9 +277,10 @@ const updateDeptDataName = (row, key, t) => {
 const updateDeptDataDel = (level, k, aId, bId, cId) => {
   console.log('updateDeptDataDel', level, k, aId, bId, cId)
   if (!bId) {
-    deptData.value[1].children.splice(k, 1)
+    console.log('del-lvel-1 star', deptData)
     deptData.value[2] = null
     deptData.value[3] = null
+    // deptData.value[1].children.splice(1, 1)
     return
   }
   deptData.value[1].children.forEach(a => {
@@ -282,9 +291,12 @@ const updateDeptDataDel = (level, k, aId, bId, cId) => {
             b.nodes.splice(k, 1)
           }
         })
-        return
+        console.log('del-1')
+        a.children.splice(k, 1)
+      } else {
+        console.log('del-2')
+        a.children.splice(k, 1)
       }
-      a.children.splice(k, 1)
     }
   })
   if (level === 2) {
@@ -301,56 +313,34 @@ const delVisibleOk = () => {
     club_id: data.club_id,
     dept_id: data.team_id
   })
-
-  // if (row.club_id) {
-  row.splice(k, 1)
-  if (level === 1) {
-    updateDeptDataDel(1, k, data.team_id)
-  }
-  if (level === 2) {
-    updateDeptDataDel(2, k, data.parent_id, data.team_id)
-  }
-  if (level === 3) {
-    updateDeptDataDel(3, k, data.delId, data.parent_id, data.team_id)
-  }
-  deptData.value[level - 1].children.forEach(e => {
-    if (e.team_id === data.parent_id) {
-      e.count--
+  postDeptDelete({
+    request_id: '',
+    operator_id: '1c38e7c3-1af7-4fe5-a878-a57fddf141d6',
+    club_id: data.club_id,
+    dept_id: data.team_id
+  }).then(res => {
+    if (res.club_id) {
+      row.splice(k, 1)
+      if (level === 1) {
+        console.log('init deptData=>', toRaw(deptData))
+        updateDeptDataDel(1, k, data.team_id)
+      }
+      if (level === 2) {
+        updateDeptDataDel(2, k, data.parent_id, data.team_id)
+      }
+      if (level === 3) {
+        updateDeptDataDel(3, k, data.delId, data.parent_id, data.team_id)
+      }
+      deptData.value[level - 1].children.forEach(e => {
+        if (e.team_id === data.parent_id) {
+          e.count--
+        }
+      })
+      AMessage.success('This is a success message!')
+    } else {
+      AMessage.error('This is a normal message!')
     }
   })
-  // AMessage.success('This is a success message!')
-  // } else {
-  //   AMessage.error('This is a normal message!')
-  // }
-  // postDeptDelete({
-  //   request_id: '',
-  //   operator_id: '1c38e7c3-1af7-4fe5-a878-a57fddf141d6',
-  //   club_id: data.club_id,
-  //   dept_id: data.team_id
-  // }).then(res => {
-  //   if (res.club_id) {
-  //     row.splice(k, 1)
-  //     if (level > 1) {
-  //       if (level === 1) {
-  //         updateDeptDataDel(k, data.team_id)
-  //       }
-  //       if (level === 2) {
-  //         updateDeptDataDel(k, data.parent_id, data.team_id)
-  //       }
-  //       if (level === 3) {
-  //         updateDeptDataDel(k, data.delId, data.parent_id, data.team_id)
-  //       }
-  //       deptData.value[level - 1].children.forEach(e => {
-  //         if (e.team_id === data.parent_id) {
-  //           e.count--
-  //         }
-  //       })
-  //     }
-  //     AMessage.success('This is a success message!')
-  //   } else {
-  //     AMessage.error('This is a normal message!')
-  //   }
-  // })
 }
 // 取消删除
 const delVisibleCancel = () => {
@@ -368,6 +358,7 @@ const deptDel = (row, data, k, level) => {
 }
 // // 获取下级部门 - API
 const deptGetChildren = row => {
+  console.log('row', row)
   stateData.value.loadingTwo = true
   // 更新第三、四列
   deptData.value[2] = null
@@ -491,7 +482,7 @@ const outSideClick = (ev, k) => {
     </div>
     <a-spin :loading="deptLoading" dot class="w-100%">
       <div class="flex dept-warp">
-        <div class="dept-box">
+        <div class="dept-box" v-if="false">
           <div class="dept-box-title">LEVEL - 1</div>
           <div class="dept-box-min">
             <a-skeleton class="p-20px" animation v-if="deptData.length === 0">
@@ -506,41 +497,39 @@ const outSideClick = (ev, k) => {
             <template
               v-else-if="deptData[0] && deptData[0].children.length > 0"
             >
-              <div ref="sideRef">
-                <div
-                  class="dept-box-item h-36px lh-36px"
-                  v-for="(deptItem, index) in deptData[0].children"
-                  :key="index"
-                  :class="deptItem.selectFlag ? 'dept-box-item-select' : ''"
-                >
-                  <div class="dept-box-item-l">
+              <div
+                class="dept-box-item h-36px lh-36px"
+                v-for="(deptItem, index) in deptData[0].children"
+                :key="index"
+                :class="deptItem.selectFlag ? 'dept-box-item-select' : ''"
+              >
+                <div class="dept-box-item-l">
+                  <div
+                    class="dept-box-item-name"
+                    @click="deptGetChildren(deptItem)"
+                    @mouseenter="itemMouseenter(deptItem)"
+                    @mouseleave="itemMouseleave(deptItem)"
+                    v-show="!deptItem.editState"
+                  >
+                    <i class="dept-box-item-ico"></i>
+                    {{ deptItem.team_name }}
+                  </div>
+                  <a-input
+                    v-if="deptItem.editShowFlag && deptItem.editState === 1"
+                    :default-value="deptItem.team_name"
+                  />
+                </div>
+                <div class="dept-box-item-r" v-if="deptItem.count">
+                  <span>{{ deptItem.count || '' }}</span>
+                  <template v-if="deptItem.editShowFlag">
                     <div
-                      class="dept-box-item-name"
-                      @click="deptGetChildren(deptItem)"
-                      @mouseenter="itemMouseenter(deptItem)"
-                      @mouseleave="itemMouseleave(deptItem)"
-                      v-show="!deptItem.editState"
+                      v-if="deptItem.editShow"
+                      class="dept-box-btn flex justify-start items-center"
                     >
-                      <i class="dept-box-item-ico"></i>
-                      {{ deptItem.team_name }}
+                      <icon-ri:edit-box-line class="text-20px" />
+                      <icon-ri:delete-bin-6-line class="text-20px" />
                     </div>
-                    <a-input
-                      v-if="deptItem.editShowFlag && deptItem.editState === 1"
-                      :default-value="deptItem.team_name"
-                    />
-                  </div>
-                  <div class="dept-box-item-r" v-if="deptItem.count">
-                    <span>{{ deptItem.count || '' }}</span>
-                    <template v-if="deptItem.editShowFlag">
-                      <div
-                        v-if="deptItem.editShow"
-                        class="dept-box-btn flex justify-start items-center"
-                      >
-                        <icon-ri:edit-box-line class="text-20px" />
-                        <icon-ri:delete-bin-6-line class="text-20px" />
-                      </div>
-                    </template>
-                  </div>
+                  </template>
                 </div>
               </div>
             </template>
@@ -583,7 +572,7 @@ const outSideClick = (ev, k) => {
           class="dept-box"
           v-if="deptData[1] && deptData[1].children.length > 0"
         >
-          <div class="dept-box-title">LEVEL - 2</div>
+          <div class="dept-box-title">LEVEL - 1</div>
           <div class="dept-box-min" @click.capture="outSideClick($event, 2)">
             <div
               class="dept-box-item h-36px lh-36px"
@@ -606,11 +595,12 @@ const outSideClick = (ev, k) => {
                   v-if="deptItem.editShowFlag && deptItem.editState"
                   v-model="deptItem.team_name"
                   :default-value="deptItem.team_name"
+                  @press-enter="deptNameCheck(deptItem)"
                 />
               </div>
               <div class="dept-box-item-r flex justify-center items-center">
                 <span v-show="!deptItem.editShow && !deptItem.editState">{{
-                  deptItem.count
+                  deptItem.count || ''
                 }}</span>
                 <template
                   v-if="
@@ -623,11 +613,11 @@ const outSideClick = (ev, k) => {
                     v-if="deptItem.editState === 0"
                     @click="deptNameTab(deptItem, 1, index, deptItem.team_id)"
                   />
-                  <icon-material-symbols:check-circle-outline-rounded
+                  <!-- <icon-material-symbols:check-circle-outline-rounded
                     v-if="deptItem.editState === 1"
                     class="text-20px color-#746CE8"
                     @click="deptNameCheck(deptItem)"
-                  />
+                  /> -->
                   <icon-ri:delete-bin-6-line
                     class="text-20px color-#746CE8"
                     @click="deptDel(deptData[1].children, deptItem, index, 1)"
@@ -652,29 +642,21 @@ const outSideClick = (ev, k) => {
               >+ New Dept.</a-button
             >
             <div class="flex justify-center items-center" v-else>
-              <a-input default-value="New dept" v-model="deptData[1].addVal" />
-              <icon-material-symbols:check-circle-outline-rounded
+              <a-input
+                default-value="New dept"
+                v-model="deptData[1].addVal"
+                @press-enter="deptAdd(deptData[1], false)"
+              />
+              <!-- <icon-material-symbols:check-circle-outline-rounded
                 class="text-20px pl-10px color-#746CE8"
                 @click="deptAdd(deptData[1], false)"
-              />
+              /> -->
             </div>
           </div>
         </div>
-        <div
-          class="dept-box"
-          v-if="deptData[2] && deptData[2].children.length > 0"
-        >
-          <div class="dept-box-title">LEVEL - 3</div>
+        <div class="dept-box" v-if="deptData[2]">
+          <div class="dept-box-title">LEVEL - 2</div>
           <div class="dept-box-min" @click.capture="outSideClick($event, 3)">
-            <a-skeleton class="p-20px" animation v-if="deptData.length === 0">
-              <a-space
-                direction="vertical"
-                :style="{ width: '100%' }"
-                size="large"
-              >
-                <a-skeleton-line :rows="5" />
-              </a-space>
-            </a-skeleton>
             <div
               class="dept-box-item h-36px lh-36px"
               v-for="(deptItem, index) in deptData[2].children"
@@ -700,7 +682,7 @@ const outSideClick = (ev, k) => {
               </div>
               <div class="dept-box-item-r flex justify-center items-center">
                 <span v-show="!deptItem.editShow && !deptItem.editState">{{
-                  deptItem.count
+                  deptItem.count || ''
                 }}</span>
 
                 <template
@@ -751,12 +733,9 @@ const outSideClick = (ev, k) => {
             </div>
           </div>
         </div>
-        <div
-          class="dept-box"
-          v-if="deptData[3] && deptData[3].children.length > 0"
-        >
-          <div class="dept-box-title">LEVEL - 4</div>
-          <div class="dept-box-min">
+        <div class="dept-box" v-if="deptData[3]">
+          <div class="dept-box-title">LEVEL - 3</div>
+          <div class="dept-box-min" v-if="deptData[3].children.length > 0">
             <div
               v-for="(deptItem, index) in deptData[3].children || []"
               :key="index"
@@ -856,12 +835,14 @@ const outSideClick = (ev, k) => {
 </template>
 
 <style>
+.header-txt {
+  color: #4b465c;
+}
 .header-txt h3 {
   font-size: 18px;
 }
 .header-txt ul {
   padding-left: 30px;
-  color: #4b465c;
 }
 .header-txt ul li::marker {
   font-size: 12px;
@@ -874,7 +855,6 @@ const outSideClick = (ev, k) => {
   height: calc(100vh - 333px);
   box-shadow: 0 0 10px #0000001a;
   border-radius: 5px;
-  padding-top: 10px;
 }
 
 .dept-box {
@@ -895,6 +875,7 @@ const outSideClick = (ev, k) => {
   text-align: center;
 }
 .dept-box-min {
+  padding-top: 10px;
   flex-grow: 2;
 }
 
@@ -905,6 +886,7 @@ const outSideClick = (ev, k) => {
   border-left: 2px solid transparent;
 }
 .dept-box-item:hover,
+.dept-box-item:hover .dept-box-item-ico,
 .dept-box-item-select,
 .dept-box-item-select .dept-box-item-ico {
   color: #746ce8;

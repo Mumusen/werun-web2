@@ -2,7 +2,7 @@
  * @Author       : 中文-简体
  * @Date         : 2023-03-27 10:58:54
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-28 15:46:26
+ * @LastEditTime : 2023-03-29 11:19:16
  * @FilePath     : /src/locales/zh-CN.js
  * @Description  :
  * Copyright 2023 OBKoro1, All Rights Reserved.
@@ -22,6 +22,7 @@ export default {
   win: {
     title_1: '标题',
     text_1: '是否提交已变更的内容？',
-    text_2: '是否提交删除的内容？'
+    text_2:
+      'Department “Web Devs” and all its sub departments will be removed. Do you want to proceed'
   }
 }

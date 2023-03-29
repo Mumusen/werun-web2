@@ -2,7 +2,7 @@
  * @Author       : 英文-美式
  * @Date         : 2023-03-27 10:58:54
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-28 15:46:23
+ * @LastEditTime : 2023-03-29 11:08:56
  * @FilePath     : /src/locales/en-US.js
  * @Description  :
  * Copyright 2023 OBKoro1, All Rights Reserved.
@@ -20,8 +20,9 @@ export default {
     sidebarLayout: 'Sidebar Layout'
   },
   win: {
-    title_1: 'Title',
+    title_1: 'Warning',
     text_1: 'Do you want to commit the changed content?',
-    text_2: 'Do you want to submit the deleted content?'
+    text_2:
+      'Department “Web Devs” and all its sub departments will be removed. Do you want to proceed?'
   }
 }

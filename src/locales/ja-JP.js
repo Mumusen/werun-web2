@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-27 16:17:37
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-28 15:46:25
+ * @LastEditTime : 2023-03-29 11:19:14
  * @FilePath     : /src/locales/ja-JP.js
  * @Description  : 日语
  * Copyright 2023 OBKoro1, All Rights Reserved.
@@ -22,6 +22,7 @@ export default {
   win: {
     title_1: 'タイトル',
     text_1: '変更されたコンテンツをコミットしますか?',
-    text_2: '削除されたコンテンツを送信しますか?'
+    text_2:
+      'Department “Web Devs” and all its sub departments will be removed. Do you want to proceed?'
   }
 }
