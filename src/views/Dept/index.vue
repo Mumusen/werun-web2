@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-24 16:18:46
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-29 15:10:42
+ * @LastEditTime : 2023-03-29 15:57:01
  * @FilePath     : /src/views/Dept/index.vue
  * @Description  : Dept
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -459,8 +459,8 @@ const outSideClick = (ev, k) => {
 </script>
 
 <template>
-  <div class="w-full p-20px box-border">
-    <div class="header-txt">
+  <div class="w-full box-border">
+    <div class="header-txt mb-20px">
       <h3>Department Hierarchy</h3>
       <p>
         Departments are units for team division in team competitions. They are
@@ -849,12 +849,13 @@ const outSideClick = (ev, k) => {
 }
 .arco-spin {
   @apply bg-[var(--color-bg-1)] relative;
+  border-radius: 6px;
 }
 .dept-warp {
   box-sizing: border-box;
   height: calc(100vh - 333px);
-  box-shadow: 0 0 10px #0000001a;
-  border-radius: 5px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
 }
 
 .dept-box {

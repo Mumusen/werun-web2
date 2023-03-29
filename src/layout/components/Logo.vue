@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-14 15:12:18
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-27 15:51:33
+ * @LastEditTime : 2023-03-29 15:44:00
  * @FilePath     : /src/layout/components/Logo.vue
  * @Description  : Logo + Page Title
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -21,7 +21,7 @@ watchEffect(() => {
 </script>
 <template>
   <div
-    class="h-full flex items-center text-16px font-700 text-shadow-sm cursor-pointer"
+    class="flex items-center text-16px font-700 text-shadow-sm cursor-pointer p-20px"
     @click="$router.push('/')"
   >
     <div
