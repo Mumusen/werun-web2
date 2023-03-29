@@ -1,504 +1,281 @@
 {
-  "managingClubs": {
-    "clubs": [
+  "club": {
+    "id": 21,
+    "public_id": 212110,
+    "user_id": "1c38e7c3-1af7-4fe5-a878-a57fddf141d6",
+    "name": "無効グループ",
+    "icon": "https://s3-ap-northeast-1.amazonaws.com/werun-user-photo/593eb47a-67ac-11ec-b572-e60e24161283.jpeg",
+    "des": "",
+    "short_url": "21",
+    "sort_num": 0,
+    "state": true,
+    "authorized": false,
+    "data_body": "{\"club_number\":2110,\"enterprise_name\":\"I’m \",\"is_close_join\":false,\"join_code\":\"12\",\"open_rankings\":[{\"enable\":true,\"name\":\"members_step\",\"type\":0},{\"enable\":false,\"name\":\"members_praise\",\"type\":0},{\"enable\":false,\"name\":\"members_running\",\"type\":0},{\"enable\":false,\"name\":\"member_brisk_walking\",\"type\":0}],\"scale\":5,\"verify_code\":\"12\"}",
+    "source": 0,
+    "city_code": "042072",
+    "industry_id": 8,
+    "common_byte": 0,
+    "create_time": "2021-12-28T16:04:07+09:00",
+    "person_count": 1,
+    "join_code": "12",
+    "verify_code": "12",
+    "organization_name": "I’m ",
+    "scale": 5,
+    "open_type": 1,
+    "display_member_mobile": false,
+    "display_member_email": true,
+    "new_member_alert": false,
+    "invite_qrcode_type": 1,
+    "open_rankings": [
       {
-        "id": 22,
-        "public_id": 227209,
-        "user_id": "1c38e7c3-1af7-4fe5-a878-a57fddf141d6",
-        "name": "agh",
-        "icon": "https://s3-ap-northeast-1.amazonaws.com/werun-user-photo/564e6d28-67ad-11ec-b572-e60e24161283.jpeg",
-        "des": "",
-        "short_url": "22",
-        "sort_num": 0,
-        "state": true,
-        "authorized": false,
-        "data_body": "{\"enterprise_name\":\"ash\",\"verify_code\":\"\",\"join_code\":\"fhj\",\"club_number\":7209,\"scale\":6,\"is_close_join\":false,\"open_rankings\":[{\"enable\":true,\"name\":\"members_step\",\"type\":0},{\"enable\":false,\"name\":\"members_praise\",\"type\":0},{\"enable\":false,\"name\":\"members_running\",\"type\":0},{\"enable\":false,\"name\":\"member_brisk_walking\",\"type\":0}]}",
-        "source": 0,
-        "city_code": "072087",
-        "industry_id": 19,
-        "common_byte": 0,
-        "create_time": "2021-12-28T16:11:11+09:00",
-        "person_count": 1,
-        "join_code": "fhj",
-        "verify_code": "",
-        "organization_name": "ash",
-        "scale": 6,
-        "open_type": 1,
-        "display_member_mobile": false,
-        "display_member_email": true,
-        "new_member_alert": false,
-        "invite_qrcode_type": 0,
-        "open_rankings": [
-          {
-            "enable": true,
-            "name": "members_step",
-            "type": 0
-          },
-          {
-            "enable": false,
-            "name": "members_praise",
-            "type": 0
-          },
-          {
-            "enable": false,
-            "name": "members_running",
-            "type": 0
-          },
-          {
-            "enable": false,
-            "name": "member_brisk_walking",
-            "type": 0
-          },
-          {
-            "enable": false,
-            "name": "departments_step",
-            "type": 1
-          }
-        ],
-        "icon_formatted": {
-          "url": "https://s3-ap-northeast-1.amazonaws.com/werun-user-photo/564e6d28-67ad-11ec-b572-e60e24161283.jpeg",
-          "sizes": ["", "", ""]
-        },
-        "vip": false,
-        "vip_level": 0,
-        "vip_start": "1970-01-02T00:00:00+09:00",
-        "vip_end": "2019-01-29T11:49:59+09:00",
-        "is_new": false
+        "enable": true,
+        "name": "members_step",
+        "type": 0
       },
       {
-        "id": 21,
-        "public_id": 212110,
-        "user_id": "1c38e7c3-1af7-4fe5-a878-a57fddf141d6",
-        "name": "無効グループ",
-        "icon": "https://s3-ap-northeast-1.amazonaws.com/werun-user-photo/593eb47a-67ac-11ec-b572-e60e24161283.jpeg",
-        "des": "",
-        "short_url": "21",
-        "sort_num": 0,
-        "state": true,
-        "authorized": false,
-        "data_body": "{\"club_number\":2110,\"enterprise_name\":\"I’m \",\"is_close_join\":false,\"join_code\":\"12\",\"open_rankings\":[{\"enable\":true,\"name\":\"members_step\",\"type\":0},{\"enable\":false,\"name\":\"members_praise\",\"type\":0},{\"enable\":false,\"name\":\"members_running\",\"type\":0},{\"enable\":false,\"name\":\"member_brisk_walking\",\"type\":0}],\"scale\":5,\"verify_code\":\"12\"}",
-        "source": 0,
-        "city_code": "042072",
-        "industry_id": 8,
-        "common_byte": 0,
-        "create_time": "2021-12-28T16:04:07+09:00",
-        "person_count": 1,
-        "join_code": "12",
-        "verify_code": "12",
-        "organization_name": "I’m ",
-        "scale": 5,
-        "open_type": 1,
-        "display_member_mobile": false,
-        "display_member_email": true,
-        "new_member_alert": false,
-        "invite_qrcode_type": 1,
-        "open_rankings": [
-          {
-            "enable": true,
-            "name": "members_step",
-            "type": 0
-          },
-          {
-            "enable": false,
-            "name": "members_praise",
-            "type": 0
-          },
-          {
-            "enable": false,
-            "name": "members_running",
-            "type": 0
-          },
-          {
-            "enable": false,
-            "name": "member_brisk_walking",
-            "type": 0
-          },
-          {
-            "enable": false,
-            "name": "departments_step",
-            "type": 1
-          }
-        ],
-        "icon_formatted": {
-          "url": "https://s3-ap-northeast-1.amazonaws.com/werun-user-photo/593eb47a-67ac-11ec-b572-e60e24161283.jpeg",
-          "sizes": ["", "", ""]
-        },
-        "vip": false,
-        "vip_level": 0,
-        "vip_start": "1970-01-02T00:00:00+09:00",
-        "vip_end": "1970-01-02T23:59:59+09:00",
-        "is_new": false
+        "enable": false,
+        "name": "members_praise",
+        "type": 0
       },
       {
-        "id": 15,
-        "public_id": 154135,
-        "user_id": "2465a8b5-c588-4a99-8f30-56ec03117979",
-        "name": "イベントありGrou",
-        "icon": "https://s3-ap-northeast-1.amazonaws.com/werun-user-photo/383ac5fe-57e2-11ec-b572-e60e24161283.jpeg",
-        "des": "各種のイベントデータがあります",
-        "short_url": "15",
-        "sort_num": 0,
-        "state": true,
-        "authorized": false,
-        "data_body": "{\"club_number\":4135,\"enterprise_name\":\"Company Testっっ\",\"is_close_join\":false,\"join_code\":\"\",\"open_rankings\":[{\"enable\":true,\"name\":\"members_step\",\"type\":0},{\"enable\":true,\"name\":\"members_praise\",\"type\":0},{\"enable\":true,\"name\":\"members_running\",\"type\":0},{\"enable\":true,\"name\":\"member_brisk_walking\",\"type\":0},{\"enable\":true,\"name\":\"departments_step\",\"type\":1}],\"scale\":3,\"verify_code\":\"\"}",
-        "source": 0,
-        "city_code": "092100",
-        "industry_id": 12,
-        "common_byte": 0,
-        "create_time": "2021-11-09T15:32:36+09:00",
-        "person_count": 20,
-        "join_code": "",
-        "verify_code": "",
-        "organization_name": "Company Testっっ",
-        "scale": 3,
-        "open_type": 0,
-        "display_member_mobile": false,
-        "display_member_email": true,
-        "new_member_alert": true,
-        "invite_qrcode_type": 0,
-        "open_rankings": [
-          {
-            "enable": true,
-            "name": "members_step",
-            "type": 0
-          },
-          {
-            "enable": true,
-            "name": "members_praise",
-            "type": 0
-          },
-          {
-            "enable": true,
-            "name": "members_running",
-            "type": 0
-          },
-          {
-            "enable": true,
-            "name": "member_brisk_walking",
-            "type": 0
-          },
-          {
-            "enable": true,
-            "name": "departments_step",
-            "type": 1
-          }
-        ],
-        "icon_formatted": {
-          "url": "https://s3-ap-northeast-1.amazonaws.com/werun-user-photo/383ac5fe-57e2-11ec-b572-e60e24161283.jpeg",
-          "sizes": ["", "", ""]
-        },
-        "vip": false,
-        "vip_level": 10,
-        "vip_start": "1970-01-02T00:00:00+09:00",
-        "vip_end": "2029-01-01T23:59:59+09:00",
-        "is_new": false
+        "enable": false,
+        "name": "members_running",
+        "type": 0
       },
       {
-        "id": 4,
-        "public_id": 48152,
-        "user_id": "1c38e7c3-1af7-4fe5-a878-a57fddf141d6",
-        "name": "クラブ４Free V=1VL=10",
-        "icon": "https://s3-ap-northeast-1.amazonaws.com/werun-user-photo/3fb56111-b264-11e9-b1b3-f2a32ccf8f23.jpeg",
-        "des": "プログラム技術サービス",
-        "short_url": "4",
-        "sort_num": 0,
-        "state": true,
-        "authorized": false,
-        "data_body": "{\"club_number\":8152,\"enterprise_name\":\"シング\",\"is_close_join\":false,\"join_code\":\"\",\"open_rankings\":[{\"enable\":true,\"name\":\"members_step\",\"type\":0},{\"enable\":false,\"name\":\"members_praise\",\"type\":0},{\"enable\":false,\"name\":\"members_running\",\"type\":0},{\"enable\":false,\"name\":\"member_brisk_walking\",\"type\":0}],\"scale\":1,\"verify_code\":\"\"}",
-        "source": 0,
-        "city_code": "271004",
-        "industry_id": 86,
-        "common_byte": 0,
-        "create_time": "2019-07-30T09:52:04+09:00",
-        "person_count": 6,
-        "join_code": "",
-        "verify_code": "",
-        "organization_name": "シング",
-        "scale": 1,
-        "open_type": 0,
-        "display_member_mobile": false,
-        "display_member_email": true,
-        "new_member_alert": false,
-        "invite_qrcode_type": 0,
-        "open_rankings": [
-          {
-            "enable": true,
-            "name": "members_step",
-            "type": 0
-          },
-          {
-            "enable": false,
-            "name": "members_praise",
-            "type": 0
-          },
-          {
-            "enable": false,
-            "name": "members_running",
-            "type": 0
-          },
-          {
-            "enable": false,
-            "name": "member_brisk_walking",
-            "type": 0
-          },
-          {
-            "enable": false,
-            "name": "departments_step",
-            "type": 1
-          }
-        ],
-        "icon_formatted": {
-          "url": "https://s3-ap-northeast-1.amazonaws.com/werun-user-photo/3fb56111-b264-11e9-b1b3-f2a32ccf8f23.jpeg",
-          "sizes": ["", "", ""]
-        },
-        "vip": true,
-        "vip_level": 0,
-        "vip_start": "2000-08-01T00:00:00+09:00",
-        "vip_end": "2023-01-01T23:59:59+09:00",
-        "is_new": false
+        "enable": false,
+        "name": "member_brisk_walking",
+        "type": 0
       },
       {
-        "id": 2,
-        "public_id": 24706,
-        "user_id": "1c38e7c3-1af7-4fe5-a878-a57fddf141d6",
-        "name": "クラブ２Pro V=1VL=20",
-        "icon": "https://s3-ap-northeast-1.amazonaws.com/werun-user-photo/e65399d1-96f0-11e9-b1b3-f2a32ccf8f23.jpeg",
-        "des": "ふ",
-        "short_url": "2",
-        "sort_num": 0,
-        "state": true,
-        "authorized": false,
-        "data_body": "{\"club_number\":4706,\"enterprise_name\":\"かな\",\"is_close_join\":false,\"join_code\":\"2222\",\"open_rankings\":[{\"enable\":true,\"name\":\"members_step\",\"type\":0},{\"enable\":false,\"name\":\"members_praise\",\"type\":0},{\"enable\":false,\"name\":\"members_running\",\"type\":0},{\"enable\":false,\"name\":\"member_brisk_walking\",\"type\":0}],\"scale\":1,\"verify_code\":\"2222\"}",
-        "source": 0,
-        "city_code": "271004",
-        "industry_id": 8,
-        "common_byte": 0,
-        "create_time": "2019-06-25T11:28:21+09:00",
-        "person_count": 3,
-        "join_code": "2222",
-        "verify_code": "2222",
-        "organization_name": "かな",
-        "scale": 1,
-        "open_type": 1,
-        "display_member_mobile": false,
-        "display_member_email": false,
-        "new_member_alert": false,
-        "invite_qrcode_type": 0,
-        "open_rankings": [
+        "enable": false,
+        "name": "departments_step",
+        "type": 1
+      }
+    ],
+    "icon_formatted": {
+      "url": "https://s3-ap-northeast-1.amazonaws.com/werun-user-photo/593eb47a-67ac-11ec-b572-e60e24161283.jpeg",
+      "sizes": ["", "", ""]
+    },
+    "vip": false,
+    "vip_level": 0,
+    "vip_start": "1970-01-02T00:00:00+09:00",
+    "vip_end": "1970-01-02T23:59:59+09:00"
+  },
+  "nodes": {
+    "nodes": [
+      {
+        "club_id": 21,
+        "count": 0,
+        "nodes": [
           {
-            "enable": true,
-            "name": "members_step",
-            "type": 0
+            "club_id": 21,
+            "count": 0,
+            "nodes": [
+              {
+                "club_id": 21,
+                "count": 0,
+                "nodes": [],
+                "parent_id": 156,
+                "team_id": 157,
+                "team_name": "New dept.4"
+              }
+            ],
+            "parent_id": 155,
+            "team_id": 156,
+            "team_name": "New dept.3"
           },
           {
-            "enable": false,
-            "name": "members_praise",
-            "type": 0
+            "club_id": 21,
+            "count": 0,
+            "nodes": [
+              {
+                "club_id": 21,
+                "count": 0,
+                "nodes": [],
+                "parent_id": 163,
+                "team_id": 164,
+                "team_name": "New.4.12"
+              }
+            ],
+            "parent_id": 155,
+            "team_id": 163,
+            "team_name": "New dept.3.3"
           },
           {
-            "enable": false,
-            "name": "members_running",
-            "type": 0
+            "club_id": 21,
+            "count": 0,
+            "nodes": [
+              {
+                "club_id": 21,
+                "count": 0,
+                "nodes": [],
+                "parent_id": 165,
+                "team_id": 183,
+                "team_name": ""
+              }
+            ],
+            "parent_id": 155,
+            "team_id": 165,
+            "team_name": "New dept.3.4"
           },
           {
-            "enable": false,
-            "name": "member_brisk_walking",
-            "type": 0
+            "club_id": 21,
+            "count": 0,
+            "nodes": [
+              {
+                "club_id": 21,
+                "count": 0,
+                "nodes": [],
+                "parent_id": 166,
+                "team_id": 167,
+                "team_name": "New dept.4.1"
+              },
+              {
+                "club_id": 21,
+                "count": 0,
+                "nodes": [],
+                "parent_id": 166,
+                "team_id": 189,
+                "team_name": "New dept 22"
+              }
+            ],
+            "parent_id": 155,
+            "team_id": 166,
+            "team_name": "New dept.3.5"
           },
           {
-            "enable": false,
-            "name": "departments_step",
-            "type": 1
+            "club_id": 21,
+            "count": 0,
+            "nodes": [
+              {
+                "club_id": 21,
+                "count": 0,
+                "nodes": [],
+                "parent_id": 173,
+                "team_id": 180,
+                "team_name": ""
+              }
+            ],
+            "parent_id": 155,
+            "team_id": 173,
+            "team_name": "New dept.3.6"
+          },
+          {
+            "club_id": 21,
+            "count": 0,
+            "nodes": [],
+            "parent_id": 155,
+            "team_id": 184,
+            "team_name": ""
+          },
+          {
+            "club_id": 21,
+            "count": 0,
+            "nodes": [
+              {
+                "club_id": 21,
+                "count": 0,
+                "nodes": [],
+                "parent_id": 185,
+                "team_id": 186,
+                "team_name": ""
+              }
+            ],
+            "parent_id": 155,
+            "team_id": 185,
+            "team_name": ""
           }
         ],
-        "icon_formatted": {
-          "url": "https://s3-ap-northeast-1.amazonaws.com/werun-user-photo/e65399d1-96f0-11e9-b1b3-f2a32ccf8f23.jpeg",
-          "sizes": ["", "", ""]
-        },
-        "vip": true,
-        "vip_level": 20,
-        "vip_start": "2020-08-01T00:00:00+09:00",
-        "vip_end": "2031-04-30T23:59:59+09:00",
-        "is_new": false
+        "parent_id": 0,
+        "team_id": 155,
+        "team_name": "test_2_5"
       },
       {
-        "id": 1,
-        "public_id": 13601,
-        "user_id": "1c38e7c3-1af7-4fe5-a878-a57fddf141d6",
-        "name": "クラブ１ProS V=1VL=10",
-        "icon": "https://s3-ap-northeast-1.amazonaws.com/werun-user-photo/f1dc375d-96e6-11e9-b1b3-f2a32ccf8f23.jpeg",
-        "des": "hi",
-        "short_url": "1",
-        "sort_num": 0,
-        "state": true,
-        "authorized": false,
-        "data_body": "{\"club_number\":3601,\"enterprise_name\":\"Xing-test \",\"is_close_join\":false,\"join_code\":\"\",\"open_rankings\":[{\"enable\":true,\"name\":\"members_step\",\"type\":0},{\"enable\":true,\"name\":\"members_praise\",\"type\":0},{\"enable\":true,\"name\":\"members_running\",\"type\":0},{\"enable\":true,\"name\":\"member_brisk_walking\",\"type\":0},{\"enable\":true,\"name\":\"departments_step\",\"type\":1}],\"scale\":1,\"verify_code\":\"\"}",
-        "source": 0,
-        "city_code": "271004",
-        "industry_id": 85,
-        "common_byte": 1,
-        "create_time": "2019-06-25T10:17:05+09:00",
-        "person_count": 6,
-        "join_code": "",
-        "verify_code": "",
-        "organization_name": "Xing-test ",
-        "scale": 1,
-        "open_type": 0,
-        "display_member_mobile": false,
-        "display_member_email": true,
-        "new_member_alert": false,
-        "invite_qrcode_type": 0,
-        "open_rankings": [
+        "club_id": 21,
+        "count": 0,
+        "nodes": [
           {
-            "enable": true,
-            "name": "members_step",
-            "type": 0
-          },
-          {
-            "enable": true,
-            "name": "members_praise",
-            "type": 0
-          },
-          {
-            "enable": true,
-            "name": "members_running",
-            "type": 0
-          },
-          {
-            "enable": true,
-            "name": "member_brisk_walking",
-            "type": 0
-          },
-          {
-            "enable": true,
-            "name": "departments_step",
-            "type": 1
+            "club_id": 21,
+            "count": 0,
+            "nodes": [
+              {
+                "club_id": 21,
+                "count": 0,
+                "nodes": [],
+                "parent_id": 160,
+                "team_id": 187,
+                "team_name": ""
+              },
+              {
+                "club_id": 21,
+                "count": 0,
+                "nodes": [],
+                "parent_id": 160,
+                "team_id": 188,
+                "team_name": ""
+              }
+            ],
+            "parent_id": 159,
+            "team_id": 160,
+            "team_name": "New dept31"
           }
         ],
-        "icon_formatted": {
-          "url": "https://s3-ap-northeast-1.amazonaws.com/werun-user-photo/f1dc375d-96e6-11e9-b1b3-f2a32ccf8f23.jpeg",
-          "sizes": ["", "", ""]
-        },
-        "vip": true,
-        "vip_level": 10,
-        "vip_start": "2020-08-01T00:00:00+09:00",
-        "vip_end": "2031-12-30T23:59:59+09:00",
-        "is_new": false
+        "parent_id": 0,
+        "team_id": 159,
+        "team_name": "热"
+      },
+      {
+        "club_id": 21,
+        "count": 0,
+        "nodes": [
+          {
+            "club_id": 21,
+            "count": 0,
+            "nodes": [
+              {
+                "club_id": 21,
+                "count": 0,
+                "nodes": [],
+                "parent_id": 171,
+                "team_id": 172,
+                "team_name": "Test 01"
+              }
+            ],
+            "parent_id": 169,
+            "team_id": 171,
+            "team_name": "明日"
+          },
+          {
+            "club_id": 21,
+            "count": 0,
+            "nodes": [
+              {
+                "club_id": 21,
+                "count": 0,
+                "nodes": [],
+                "parent_id": 181,
+                "team_id": 182,
+                "team_name": "New"
+              }
+            ],
+            "parent_id": 169,
+            "team_id": 181,
+            "team_name": "New dept 1"
+          }
+        ],
+        "parent_id": 0,
+        "team_id": 169,
+        "team_name": "大丈夫"
+      },
+      {
+        "club_id": 21,
+        "count": 0,
+        "nodes": [],
+        "parent_id": 0,
+        "team_id": 179,
+        "team_name": "New dept.3.4"
       }
     ]
-  },
-  "allDeptTree": {
-    "club": {
-        "id": 21,
-        "public_id": 212110,
-        "user_id": "1c38e7c3-1af7-4fe5-a878-a57fddf141d6",
-        "name": "無効グループ",
-        "icon": "https://s3-ap-northeast-1.amazonaws.com/werun-user-photo/593eb47a-67ac-11ec-b572-e60e24161283.jpeg",
-        "des": "",
-        "short_url": "21",
-        "sort_num": 0,
-        "state": true,
-        "authorized": false,
-        "data_body": "{\"club_number\":2110,\"enterprise_name\":\"I’m \",\"is_close_join\":false,\"join_code\":\"12\",\"open_rankings\":[{\"enable\":true,\"name\":\"members_step\",\"type\":0},{\"enable\":false,\"name\":\"members_praise\",\"type\":0},{\"enable\":false,\"name\":\"members_running\",\"type\":0},{\"enable\":false,\"name\":\"member_brisk_walking\",\"type\":0}],\"scale\":5,\"verify_code\":\"12\"}",
-        "source": 0,
-        "city_code": "042072",
-        "industry_id": 8,
-        "common_byte": 0,
-        "create_time": "2021-12-28T16:04:07+09:00",
-        "person_count": 1,
-        "join_code": "12",
-        "verify_code": "12",
-        "organization_name": "I’m ",
-        "scale": 5,
-        "open_type": 1,
-        "display_member_mobile": false,
-        "display_member_email": true,
-        "new_member_alert": false,
-        "invite_qrcode_type": 1,
-        "open_rankings": [
-            {
-                "enable": true,
-                "name": "members_step",
-                "type": 0
-            },
-            {
-                "enable": false,
-                "name": "members_praise",
-                "type": 0
-            },
-            {
-                "enable": false,
-                "name": "members_running",
-                "type": 0
-            },
-            {
-                "enable": false,
-                "name": "member_brisk_walking",
-                "type": 0
-            },
-            {
-                "enable": false,
-                "name": "departments_step",
-                "type": 1
-            }
-        ],
-        "icon_formatted": {
-            "url": "https://s3-ap-northeast-1.amazonaws.com/werun-user-photo/593eb47a-67ac-11ec-b572-e60e24161283.jpeg",
-            "sizes": [
-                "",
-                "",
-                ""
-            ]
-        },
-        "vip": false,
-        "vip_level": 0,
-        "vip_start": "1970-01-02T00:00:00+09:00",
-        "vip_end": "1970-01-02T23:59:59+09:00"
-    },
-    "nodes": {
-        "nodes": [
-            {
-                "club_id": 21,
-                "count": 0,
-                "nodes": [],
-                "parent_id": 0,
-                "team_id": 149,
-                "team_name": "test_2_1"
-            },
-            {
-                "club_id": 21,
-                "count": 0,
-                "nodes": [],
-                "parent_id": 0,
-                "team_id": 150,
-                "team_name": "test_2_2"
-            },
-            {
-                "club_id": 21,
-                "count": 0,
-                "nodes": [],
-                "parent_id": 0,
-                "team_id": 151,
-                "team_name": "test_2_3"
-            },
-            {
-                "club_id": 21,
-                "count": 0,
-                "nodes": [
-                    {
-                        "club_id": 21,
-                        "count": 0,
-                        "nodes": [],
-                        "parent_id": 152,
-                        "team_id": 153,
-                        "team_name": "test_2_4_1"
-                    }
-                ],
-                "parent_id": 0,
-                "team_id": 152,
-                "team_name": "test_2_4"
-            }
-        ]
-    }
   }
 }

@@ -1,0 +1,131 @@
+{
+  "data": [
+    {
+      "club_id": 21,
+      "count": 0,
+      "nodes": [
+        {
+          "club_id": 21,
+          "count": 0,
+          "nodes": [
+            {
+              "club_id": 21,
+              "count": 0,
+              "nodes": [],
+              "parent_id": 156,
+              "team_id": 157,
+              "team_name": "New dept.4"
+            }
+          ],
+          "parent_id": 155,
+          "team_id": 156,
+          "team_name": "New dept.3"
+        },
+        {
+          "club_id": 21,
+          "count": 0,
+          "nodes": [
+            {
+              "club_id": 21,
+              "count": 0,
+              "nodes": [],
+              "parent_id": 163,
+              "team_id": 164,
+              "team_name": "New.4.12"
+            }
+          ],
+          "parent_id": 155,
+          "team_id": 163,
+          "team_name": "New dept.3.3"
+        },
+        {
+          "club_id": 21,
+          "count": 0,
+          "nodes": [
+            {
+              "club_id": 21,
+              "count": 0,
+              "nodes": [],
+              "parent_id": 165,
+              "team_id": 183,
+              "team_name": ""
+            }
+          ],
+          "parent_id": 155,
+          "team_id": 165,
+          "team_name": "New dept.3.4"
+        },
+        {
+          "club_id": 21,
+          "count": 0,
+          "nodes": [
+            {
+              "club_id": 21,
+              "count": 0,
+              "nodes": [],
+              "parent_id": 166,
+              "team_id": 167,
+              "team_name": "New dept.4.1"
+            },
+            {
+              "club_id": 21,
+              "count": 0,
+              "nodes": [],
+              "parent_id": 166,
+              "team_id": 189,
+              "team_name": "New dept 22"
+            }
+          ],
+          "parent_id": 155,
+          "team_id": 166,
+          "team_name": "New dept.3.5"
+        },
+        {
+          "club_id": 21,
+          "count": 0,
+          "nodes": [
+            {
+              "club_id": 21,
+              "count": 0,
+              "nodes": [],
+              "parent_id": 173,
+              "team_id": 180,
+              "team_name": ""
+            }
+          ],
+          "parent_id": 155,
+          "team_id": 173,
+          "team_name": "New dept.3.6"
+        },
+        {
+          "club_id": 21,
+          "count": 0,
+          "nodes": [],
+          "parent_id": 155,
+          "team_id": 184,
+          "team_name": ""
+        },
+        {
+          "club_id": 21,
+          "count": 0,
+          "nodes": [
+            {
+              "club_id": 21,
+              "count": 0,
+              "nodes": [],
+              "parent_id": 185,
+              "team_id": 186,
+              "team_name": ""
+            }
+          ],
+          "parent_id": 155,
+          "team_id": 185,
+          "team_name": ""
+        }
+      ],
+      "parent_id": 0,
+      "team_id": 155,
+      "team_name": "test_2_5"
+    }
+  ]
+}
