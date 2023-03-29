@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-27 12:02:09
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-29 13:53:55
+ * @LastEditTime : 2023-03-29 15:04:37
  * @FilePath     : /src/layout/components/SwitchLocale.vue
  * @Description  : 语言切换
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -14,12 +14,8 @@ import { useI18n } from 'vue-i18n'
 const systemStore = useSystemStore()
 const { langueMode, langueList } = storeToRefs(systemStore)
 const { locale } = useI18n()
-// console.log('locale', locale)
-// 初始化模式
 systemStore.initMode()
-
 // 下拉菜单选中事件
-// const handleSelect = val => (langueMode.value = val)
 const handleSelect = val => {
   langueMode.value = val
   locale.value = val.name
@@ -28,6 +24,9 @@ const handleSelect = val => {
 const { next } = useCycleList(langueList.value, {
   initialValue: langueMode
 })
+watchEffect(() => {
+  console.log('xxxx')
+})
 </script>
 
 <template>
@@ -35,10 +34,7 @@ const { next } = useCycleList(langueList.value, {
     <a-button type="text" @click="next()">
       <template #icon>
         <div class="icon-header flex justify-center">
-          <img
-            :src="'src/assets/locales/' + langueMode.icon + '.png'"
-            class="icon-img-header"
-          />
+          <img :src="langueMode.icon" class="icon-img-header" />
         </div>
       </template>
       <!-- <template #icon>
@@ -57,10 +53,8 @@ const { next } = useCycleList(langueList.value, {
           />
         </template>
         <template #default>{{ item.title }}</template> -->
-        <img
-          :src="'src/assets/locales/' + item.icon + '.png'"
-          class="icon-img-item"
-        />
+        <!-- <template #default>{{ item.title }}</template> -->
+        <img :src="item.icon" class="icon-img-item" />
       </a-doption>
     </template>
   </a-dropdown>

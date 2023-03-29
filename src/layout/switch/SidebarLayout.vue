@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-14 15:12:18
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-29 14:17:14
+ * @LastEditTime : 2023-03-29 14:33:18
  * @FilePath     : /src/layout/switch/SidebarLayout.vue
  * @Description  : Layout 2
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -10,7 +10,6 @@
 -->
 <script>
 import IconRiLayout5Fill from '~icons/ri/layout-5-fill'
-import UserPic from '@/assets/img/user_pic.png'
 export default {
   name: 'SidebarLayout',
   icon: IconRiLayout5Fill,
@@ -19,9 +18,9 @@ export default {
 </script>
 
 <script setup>
+import UserPic from '@/assets/img/user_pic.png'
 // 侧边栏收缩状态
 const collapsed = ref(false)
-
 // 侧边栏收缩触发事件
 const handleCollapse = val => {
   // const content = type === 'responsive' ? '响应式触发' : '点击触发'
@@ -41,7 +40,7 @@ const handleCollapse = val => {
             <template #right>
               <SwitchMode />
               <SwitchLocale />
-              <SwitchLayout />
+              <!-- <SwitchLayout /> -->
               <a-image width="30" class="user-img" :src="UserPic" />
             </template>
           </Navbar>

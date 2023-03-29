@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-14 15:12:18
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-28 10:26:38
+ * @LastEditTime : 2023-03-29 14:29:19
  * @FilePath     : /src/layout/switch/DefaultLayout.vue
  * @Description  : Layout 1
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -17,6 +17,9 @@ export default {
 }
 </script>
 
+<script setup>
+import UserPic from '@/assets/img/user_pic.png'
+</script>
 <template>
   <div>
     <div class="default-layout">
@@ -38,7 +41,8 @@ export default {
               <template #right>
                 <SwitchMode />
                 <SwitchLocale />
-                <SwitchLayout />
+                <!-- <SwitchLayout /> -->
+                <a-image width="30" class="user-img" :src="UserPic" />
               </template>
             </Navbar>
           </a-layout-header>
@@ -77,5 +81,9 @@ export default {
   @apply w-full flex justify-center items-center;
   @apply border-t-[var(--color-border-1)] border-t-solid border-t-width-1px box-border;
   @apply bg-[var(--color-bg-2)] text-[var(--color-text-1)] text-14px;
+}
+.user-img {
+  top: -8px;
+  margin-left: 10px;
 }
 </style>

@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-27 09:53:48
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-29 14:06:25
+ * @LastEditTime : 2023-03-29 15:05:57
  * @FilePath     : /src/stores/system.js
  * @Description  :系统状态
  * Copyright 2023 OBKoro1, All Rights Reserved.
@@ -12,6 +12,10 @@ import { getConfig } from '@/config/index'
 import IconMaterialSymbolsWbSunnyRounded from '~icons/material-symbols/wb-sunny-rounded'
 import IconMaterialSymbolsDarkModeRounded from '~icons/material-symbols/dark-mode-rounded'
 import IconMdiThemeLightDark from '~icons/mdi/theme-light-dark'
+import { useI18n } from 'vue-i18n'
+import picCH from '@/assets/locales/china_flag.png'
+import picJP from '@/assets/locales/japan_flag.png'
+import picUS from '@/assets/locales/united_states_of_america_flag.png'
 
 export const useSystemStore = defineStore(
   'system',
@@ -34,7 +38,7 @@ export const useSystemStore = defineStore(
         }
       }
     }
-
+    const { locale } = useI18n()
     // 模式列表
     const modeList = ref([
       {
@@ -52,7 +56,8 @@ export const useSystemStore = defineStore(
     ])
     // 当前模式
     const currentMode = ref(null)
-    const langueMode = ref(localStorage.getItem('langue') || 'ja-JP')
+    const langueMode = ref(null)
+    // const langueMode = ref(localStorage.getItem('langue') || 'ja-JP')
     const mode = useColorMode({
       attribute: 'arco-theme',
       emitAuto: true,
@@ -61,27 +66,35 @@ export const useSystemStore = defineStore(
       initialValue: currentMode.value?.name,
       storageKey: null
     })
-    watchEffect(() => (mode.value = currentMode.value?.name))
-
+    watchEffect(() => {
+      mode.value = currentMode.value?.name
+      mode.value = langueMode.value?.name
+      locale.value = langueMode.value?.name
+      localStorage.setItem('lang', langueMode.value?.name)
+    })
     // 语言列表
     const langueList = ref([
       {
         name: 'ja-JP',
-        icon: 'japan_flag',
+        icon: picJP,
         title: '日本语'
       },
       {
         name: 'zh-CN',
-        icon: 'china_flag',
+        icon: picCH,
         title: '中文简体'
       },
       {
         name: 'en-US',
-        icon: 'united_states_of_america_flag',
+        icon: picUS,
         title: 'English'
       }
     ])
-    watchEffect(() => (mode.value = langueMode.value?.name))
+    // watchEffect(() => {
+    //   mode.value = langueMode.value?.name
+    //   locale.value = langueMode.value?.name
+    //   localStorage.setItem('lang', langueMode.value?.name)
+    // })
     // 初始化模式
     const initMode = () => {
       if (!currentMode.value) {

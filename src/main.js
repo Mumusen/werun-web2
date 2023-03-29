@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-27 09:53:48
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-28 16:13:51
+ * @LastEditTime : 2023-03-29 14:54:18
  * @FilePath     : /src/main.js
  * @Description  :
  * Copyright 2023 OBKoro1, All Rights Reserved.
@@ -39,7 +39,7 @@ import jaJP from '@/locales/ja-JP.js'
 const i18n = createI18n({
   legacy: false,
   globalInjection: true,
-  locale: localStorage.getItem('lang') || 'ja-JP',
+  // locale: localStorage.getItem('lang') || 'ja-JP',
   messages: {
     'zh-CN': zhCN,
     'en-US': enUs,
