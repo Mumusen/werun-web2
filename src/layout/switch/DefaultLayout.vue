@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-14 15:12:18
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-29 14:29:19
+ * @LastEditTime : 2023-03-29 15:12:02
  * @FilePath     : /src/layout/switch/DefaultLayout.vue
  * @Description  : Layout 1
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -41,7 +41,7 @@ import UserPic from '@/assets/img/user_pic.png'
               <template #right>
                 <SwitchMode />
                 <SwitchLocale />
-                <!-- <SwitchLayout /> -->
+                <SwitchLayout />
                 <a-image width="30" class="user-img" :src="UserPic" />
               </template>
             </Navbar>

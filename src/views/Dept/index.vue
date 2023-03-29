@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-24 16:18:46
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-29 11:26:23
+ * @LastEditTime : 2023-03-29 15:10:42
  * @FilePath     : /src/views/Dept/index.vue
  * @Description  : Dept
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -735,7 +735,7 @@ const outSideClick = (ev, k) => {
         </div>
         <div class="dept-box" v-if="deptData[3]">
           <div class="dept-box-title">LEVEL - 3</div>
-          <div class="dept-box-min" v-if="deptData[3].children.length > 0">
+          <div class="dept-box-min">
             <div
               v-for="(deptItem, index) in deptData[3].children || []"
               :key="index"

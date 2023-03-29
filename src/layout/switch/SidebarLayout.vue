@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-14 15:12:18
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-29 14:33:18
+ * @LastEditTime : 2023-03-29 15:12:00
  * @FilePath     : /src/layout/switch/SidebarLayout.vue
  * @Description  : Layout 2
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -40,7 +40,7 @@ const handleCollapse = val => {
             <template #right>
               <SwitchMode />
               <SwitchLocale />
-              <!-- <SwitchLayout /> -->
+              <SwitchLayout />
               <a-image width="30" class="user-img" :src="UserPic" />
             </template>
           </Navbar>
