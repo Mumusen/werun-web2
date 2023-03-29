@@ -7,3 +7,12 @@
 }
 
 @arcoblue-6: #7165E8;
+
+.arco-menu-light .arco-menu-item.arco-menu-selected {
+  background: linear-gradient(rgba(115, 103, 240, 1), rgba(115, 103, 240, 0.7)) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+}
+.arco-menu-light .arco-menu-item.arco-menu-selected .arco-menu-icon {
+  color: #fff !important;
+}

@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-14 15:12:18
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-28 15:47:27
+ * @LastEditTime : 2023-03-29 14:17:14
  * @FilePath     : /src/layout/switch/SidebarLayout.vue
  * @Description  : Layout 2
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -10,6 +10,7 @@
 -->
 <script>
 import IconRiLayout5Fill from '~icons/ri/layout-5-fill'
+import UserPic from '@/assets/img/user_pic.png'
 export default {
   name: 'SidebarLayout',
   icon: IconRiLayout5Fill,
@@ -41,6 +42,7 @@ const handleCollapse = val => {
               <SwitchMode />
               <SwitchLocale />
               <SwitchLayout />
+              <a-image width="30" class="user-img" :src="UserPic" />
             </template>
           </Navbar>
         </a-layout-header>
@@ -103,5 +105,9 @@ const handleCollapse = val => {
 .sidebar-layout :deep(.arco-layout-sider),
 .sidebar-layout :deep(.arco-layout-sider-trigger) {
   @apply border-r-[var(--color-border-1)] border-r-solid border-r-width-1px box-border;
+}
+.user-img {
+  top: -8px;
+  margin-left: 10px;
 }
 </style>

@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-27 09:53:48
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-27 16:21:49
+ * @LastEditTime : 2023-03-29 14:06:25
  * @FilePath     : /src/stores/system.js
  * @Description  :系统状态
  * Copyright 2023 OBKoro1, All Rights Reserved.
@@ -12,8 +12,6 @@ import { getConfig } from '@/config/index'
 import IconMaterialSymbolsWbSunnyRounded from '~icons/material-symbols/wb-sunny-rounded'
 import IconMaterialSymbolsDarkModeRounded from '~icons/material-symbols/dark-mode-rounded'
 import IconMdiThemeLightDark from '~icons/mdi/theme-light-dark'
-import IcBaselineLanguage from '~icons/ic/baseline-language'
-// const { locale } = useI18n()
 
 export const useSystemStore = defineStore(
   'system',
@@ -69,17 +67,17 @@ export const useSystemStore = defineStore(
     const langueList = ref([
       {
         name: 'ja-JP',
-        icon: markRaw(IcBaselineLanguage),
+        icon: 'japan_flag',
         title: '日本语'
       },
       {
         name: 'zh-CN',
-        icon: markRaw(IcBaselineLanguage),
+        icon: 'china_flag',
         title: '中文简体'
       },
       {
         name: 'en-US',
-        icon: markRaw(IcBaselineLanguage),
+        icon: 'united_states_of_america_flag',
         title: 'English'
       }
     ])

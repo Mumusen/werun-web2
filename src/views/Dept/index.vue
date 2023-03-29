@@ -359,7 +359,7 @@ const deptDel = (row, data, k, level) => {
 // // 获取下级部门 - API
 const deptGetChildren = row => {
   console.log('row', row)
-  stateData.value.loadingTwo = true
+  deptLoading.value = true
   // 更新第三、四列
   deptData.value[2] = null
   deptData.value[3] = null
@@ -408,7 +408,7 @@ const deptGetChildren = row => {
       }
       deptData.value[1] = newArr
     }
-    stateData.value.loadingTwo = false
+    deptLoading.value = false
   })
 }
 // 获取部门列

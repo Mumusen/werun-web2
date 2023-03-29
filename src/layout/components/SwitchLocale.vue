@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-27 12:02:09
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-27 14:13:33
+ * @LastEditTime : 2023-03-29 13:53:55
  * @FilePath     : /src/layout/components/SwitchLocale.vue
  * @Description  : 语言切换
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -34,20 +34,33 @@ const { next } = useCycleList(langueList.value, {
   <a-dropdown @select="handleSelect" trigger="hover" class="mode-dropdown">
     <a-button type="text" @click="next()">
       <template #icon>
+        <div class="icon-header flex justify-center">
+          <img
+            :src="'src/assets/locales/' + langueMode.icon + '.png'"
+            class="icon-img-header"
+          />
+        </div>
+      </template>
+      <!-- <template #icon>
         <component
           :is="langueMode.icon"
-          class="text-[var(--color-text-1)] text-16px"
+          class="icon-img icon-img-header"
         ></component>
-      </template>
+      </template> -->
     </a-button>
     <template #content>
       <a-doption v-for="item of langueList" :key="item.name" :value="item">
-        <template #icon v-if="langueMode.name === item.name">
-          <icon-material-symbols-check-small
-            class="text-[var(--color-text-1)] text-14px"
+        <!-- <template #icon v-if="langueMode.name === item.name">
+          <img
+            :src="'src/assets/locales/' + item.icon + '.png'"
+            class="icon-img icon-img-item"
           />
         </template>
-        <template #default>{{ item.title }}</template>
+        <template #default>{{ item.title }}</template> -->
+        <img
+          :src="'src/assets/locales/' + item.icon + '.png'"
+          class="icon-img-item"
+        />
       </a-doption>
     </template>
   </a-dropdown>
@@ -56,5 +69,19 @@ const { next } = useCycleList(langueList.value, {
 <style scoped>
 .mode-dropdown .arco-dropdown-option {
   @apply flex justify-end items-center;
+}
+.icon-img-item {
+  width: 20px;
+  border-radius: 50%;
+  margin-top: 10px;
+}
+.icon-img-header {
+  width: 100%;
+}
+.icon-header {
+  width: 20px;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #0000001a;
+  overflow: hidden;
 }
 </style>
