@@ -23,6 +23,6 @@ export default {
     title_1: '标题',
     text_1: '是否提交已变更的内容？',
     text_2:
-      'Department “Web Devs” and all its sub departments will be removed. Do you want to proceed'
+      'Department “{msg}” and all its sub departments will be removed. Do you want to proceed'
   }
 }

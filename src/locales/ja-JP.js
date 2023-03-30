@@ -23,6 +23,6 @@ export default {
     title_1: 'タイトル',
     text_1: '変更されたコンテンツをコミットしますか?',
     text_2:
-      'Department “Web Devs” and all its sub departments will be removed. Do you want to proceed?'
+      'Department “{msg}” and all its sub departments will be removed. Do you want to proceed?'
   }
 }

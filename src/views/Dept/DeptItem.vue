@@ -14,6 +14,7 @@ const deptProps = defineProps(['deptData', 'deptKey', 'stateNum'])
 const itemsData = ref([])
 const stateObj = ref({})
 const stateObjNk = ref(null)
+const addFlag = ref(true)
 onMounted(() => {
   const { deptData } = deptProps
   itemsData.value = deptData.nodes
@@ -23,9 +24,10 @@ const emit = defineEmits([
   'children',
   'showChildren',
   'updateName',
-  'stateOverlapping'
+  'stateOverlapping',
+  'openDel'
 ])
-const openChildren = row => {
+const openChildren = (row, key) => {
   itemsData.value.forEach(e => {
     if (e.nId === row.nId) {
       e.selectFlag = true
@@ -35,7 +37,8 @@ const openChildren = row => {
   })
   emit('children', {
     data: row,
-    key: deptProps.deptKey
+    key: deptProps.deptKey,
+    nk: key
   })
 }
 watchEffect(() => {
@@ -43,6 +46,7 @@ watchEffect(() => {
   itemsData.value = deptData.nodes
   console.log('deptProps.stateNum', deptProps.stateNum)
   stateObj.value = {}
+  addFlag.value = true
 })
 // 空白区域交互，通知父，关闭子
 const outSideClick = ev => {
@@ -53,12 +57,13 @@ const outSideClick = ev => {
 // 新增
 const addItemClick = () => {
   const { deptData } = deptProps
-  const { club_id, parent_id, team_id, nodes } = deptData
+  console.log('deptData', deptData)
+  const { club_id, team_id, nodes } = deptData
   nodes.push({
     club_id: club_id,
     nodes: [],
-    parent_id: parent_id,
-    team_id: team_id,
+    parent_id: team_id,
+    // team_id: team_id,
     team_name: 'New Dept',
     oName: '',
     editShow: false,
@@ -67,6 +72,19 @@ const addItemClick = () => {
     selectFlag: false,
     nId: '21:157:158'
   })
+  console.log('add', {
+    club_id: club_id,
+    nodes: [],
+    parent_id: team_id,
+    team_name: 'New Dept',
+    oName: '',
+    editShow: false,
+    editState: 1,
+    editShowFlag: true,
+    selectFlag: false,
+    nId: '21:157:158'
+  });
+  addFlag.value = false
 }
 
 // 按钮显示 隐藏
@@ -112,7 +130,13 @@ const deptNameTab = (row, k) => {
     emit('stateOverlapping', obj)
   }
 }
-const deptDel = () => {}
+const deptDel = (row, k) => {
+  emit('openDel', {
+    data: row,
+    key: deptProps.deptKey,
+    nk: k
+  })
+}
 </script>
 <template>
   <div class="dept-box">
@@ -132,7 +156,7 @@ const deptDel = () => {}
           <div
             v-show="!deptItem.editState"
             class="dept-box-item-name"
-            @click="openChildren(deptItem)"
+            @click="openChildren(deptItem, index)"
           >
             <i class="dept-box-item-ico"></i>
             {{ deptItem.team_name }}
@@ -145,21 +169,23 @@ const deptDel = () => {}
           />
         </div>
         <div
-          class="dept-box-item-r flex justify-center items-center"
+          class="dept-box-item-r text-right"
           v-if="!deptItem.editState"
         >
           <span v-show="!deptItem.editShow && !deptItem.editState">{{
             deptItem.nodes.length || ''
           }}</span>
           <template v-if="deptItem.editShow">
-            <icon-ri:edit-box-line
-              class="text-20px color-#746CE8"
-              @click="deptNameTab(deptItem, index)"
-            />
-            <icon-ri:delete-bin-6-line
-              class="text-20px color-#746CE8"
-              @click="deptDel(deptItem)"
-            />
+            <div class="h-100% flex justify-center items-center">
+              <icon-ri:edit-box-line
+                class="text-20px color-#746CE8"
+                @click="deptNameTab(deptItem, index)"
+              />
+              <icon-ri:delete-bin-6-line
+                class="text-20px color-#746CE8"
+                @click="deptDel(deptItem, index)"
+              />
+            </div>
           </template>
         </div>
       </div>
@@ -168,7 +194,9 @@ const deptDel = () => {}
       </template>
     </div>
     <div class="p-20px">
-      <a-button type="outline" long @click="addItemClick">+ New Dept.</a-button>
+      <a-button type="outline" long @click="addItemClick" :disabled="!addFlag"
+        >+ New Dept.</a-button
+      >
     </div>
   </div>
 </template>
@@ -177,6 +205,8 @@ const deptDel = () => {}
   width: 260px;
   display: flex;
   flex-direction: column;
+  border-right: 1px solid #d7d8de;
+  font-size: 15px;
 }
 .dept-box-title {
   font-size: 15px;
@@ -190,7 +220,7 @@ const deptDel = () => {}
 .dept-box-item {
   cursor: pointer;
   display: flex;
-  padding: 7px 10px 7px 20px;
+  padding: 0 16px 0 22px;
   border-left: 2px solid transparent;
 }
 .dept-box-item:hover,

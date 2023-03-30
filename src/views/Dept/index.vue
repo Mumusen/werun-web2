@@ -9,35 +9,47 @@
  * 2023-03-24 16:18:46
 -->
 <script setup>
-// import {
-//   getManagingClubs,
-//   getClubAllDeptTree,
-//   postDeptCreate,
-//   postDeptDelete,
-//   postDeptUpdate
-// } from '@/api/dept'
-import deptJson from './dept.json'
+import {
+  // getManagingClubs,
+  getClubAllDeptTree,
+  postDeptCreate,
+  postDeptDelete,
+  postDeptUpdate
+} from '@/api/dept'
+// import deptJson from './dept.json'
 const deptDataRender = ref([])
-const deptDataInit = ref(null)
+// const deptDataInit = ref(null)
 const visibleNameShow = ref(false)
 const stateObject = ref({})
 const stateNum = ref(0)
+const deptLoading = ref(false)
+const delVisibleShow = ref(false)
+const stateObjectDel = ref({})
 onMounted(async () => {
   // 获取部门一级列表
   deptGetInit({
-    editShow: false,
-    id: 21,
-    num: 9,
-    rightShow: false,
-    selectFlag: true,
-    team_name: '無効グループ'
+    club_id: 21,
+    request_id: ''
   })
 })
 // // 获取下级部门 - API
-const deptGetInit = () => {
-  console.log('deptJson', deptJson)
-  deptDataInit.value = toNewArr(deptJson.data[0].nodes)
-  deptDataRender.value = toNewArr(deptJson.data)
+const deptGetInit = row => {
+  getClubAllDeptTree(row).then(res => {
+    console.log('allDeptTree', res)
+    const { nodes, club } = res
+    console.log('club', club, nodes)
+    // let newArr = [{}]
+    // deptDataRender.value = newArr
+    deptDataRender.value = [
+      {
+        club_id: club.id,
+        team_name: club.name,
+        oName: club.name,
+        nodes: toNewArr(nodes.nodes)
+      }
+    ]
+    console.log('deptDataRender', toRaw(deptDataRender.value))
+  })
 }
 const openChildren = row => {
   // 接收 选中当前对象 含有nodes
@@ -45,16 +57,23 @@ const openChildren = row => {
   // 删除 Y or N：
   // Y: 下坐标 === 渲染数组长度通过下坐标进行渲染数组后面删除，再进行执行N
   // N: 直接加入对象，进行渲染
-  const { data, key } = row
+  const { data, key, nk } = row
   if (key === deptDataRender.value.length - 1) {
     deptDataRender.value.push(data)
   } else {
-    console.log('openChildren', key, deptDataRender.value.length)
     deptDataRender.value.splice(key + 1, deptDataRender.value.length - 1)
-    console.log('data', data)
     deptDataRender.value.push(data)
   }
-  console.log('->', toRaw(deptDataRender.value))
+  // 循环遍历选中样式
+  arrTo(deptDataRender.value[key].nodes)
+  console.log('deptDataRender.value', row, deptDataRender.value)
+  deptDataRender.value[key].nodes[nk].selectFlag = true
+}
+const arrTo = arr => {
+  arr.forEach(e => {
+    e.selectFlag = false
+    if (e.nodes.length > 0) arrTo(e.nodes)
+  })
 }
 // 关闭子级
 const showChildren = key => {
@@ -83,31 +102,66 @@ const toNewArr = arr => {
 // 修改名称
 const updateName = row => {
   const { data, key, nk } = row
-  console.log('updateName', data, key)
-  // Ajax
-  deptDataRender.value[key].nodes[nk].oName = data.team_name
-  deptDataRender.value[key].nodes[nk].editState = 0
-  stateNum.value++
-  // postDeptUpdate({
-  //   request_id: '',
-  //   operator_id: '1c38e7c3-1af7-4fe5-a878-a57fddf141d6',
-  //   club_id: data.club_id,
-  //   dept_id: data.team_id,
-  //   new_dept: {
-  //     club_id: data.club_id,
-  //     parent_id: data.parentId,
-  //     name: data.team_name,
-  //     data_body: ''
-  //   }
-  // }).then(res => {
-  //   if (res.dept && res.dept.create_time) {
-  // deptDataRender.value[key].nodes[nk].oName = data.team_name
-  // deptDataRender.value[key].nodes[nk].editState = 0
-  //     AMessage.success('This is a success message!')
-  //   } else {
-  //     AMessage.error('This is a normal message!')
-  //   }
-  // })
+  if (!data.oName) {
+    // Add AJAX
+    const ajaxData = {
+      request_id: '',
+      operator_id: '1c38e7c3-1af7-4fe5-a878-a57fddf141d6',
+      dept: {
+        club_id: data.club_id,
+        parent_id: data.parent_id,
+        name: data.team_name,
+        data_body: ''
+      }
+    }
+    postDeptCreate(ajaxData).then(res => {
+      if (res && res.data) {
+        const { parent_id, id } = res.data
+        deptLoading.value = true
+        deptDataRender.value[key].nodes[nk].oName = data.team_name
+        deptDataRender.value[key].nodes[nk].team_id = id
+        deptDataRender.value[key].nodes[nk].parent_id = parent_id
+        deptDataRender.value[key].nodes[nk].editState = 0
+        stateNum.value++
+        openChildren({
+          data: deptDataRender.value[key].nodes[nk],
+          key: key,
+          nk
+        })
+      }
+    })
+  } else {
+    console.log('update', toRaw(data.value))
+    deptDataRender.value[key].nodes[nk].oName = data.team_name
+    deptDataRender.value[key].nodes[nk].editState = 0
+    stateNum.value++
+    // openChildren({
+    //   data: data,
+    //   key: key,
+    //   nk
+    // })
+    // Ajax
+    postDeptUpdate({
+      request_id: '',
+      operator_id: '1c38e7c3-1af7-4fe5-a878-a57fddf141d6',
+      club_id: data.club_id,
+      dept_id: data.team_id,
+      new_dept: {
+        club_id: data.club_id,
+        parent_id: data.parent_id,
+        name: data.team_name,
+        data_body: ''
+      }
+    }).then(res => {
+      if (res.dept && res.dept.create_time) {
+        deptDataRender.value[key].nodes[nk].oName = data.team_name
+        deptDataRender.value[key].nodes[nk].editState = 0
+        AMessage.success('This is a success message!')
+      } else {
+        AMessage.error('This is a normal message!')
+      }
+    })
+  }
 }
 // 弹窗-修改名称
 const stateOverlapping = row => {
@@ -120,7 +174,6 @@ const stateOverlapping = row => {
     key,
     nk
   }
-  console.log(stateObject.value)
 }
 const visibleNameOk = () => {
   const { data, key, k, nk } = toRaw(stateObject.value)
@@ -136,6 +189,46 @@ const visibleNameCancel = () => {
   deptDataRender.value[key].nodes[nk].team_name = data.oName
   deptDataRender.value[key].nodes[nk].editState = 0
   deptDataRender.value[key].nodes[k].editState = 1
+}
+// 删除部门逻辑
+const delTxt = ref(null)
+const openDel = row => {
+  const { data, key, nk } = row
+  delVisibleShow.value = true
+  delTxt.value = data.team_name
+  stateObjectDel.value = {
+    data,
+    key,
+    nk
+  }
+}
+const delVisibleCancel = () => {
+  delVisibleShow.value = false
+  stateObjectDel.value = {}
+}
+const delVisibleOk = () => {
+  console.log('stateObjectDel', toRaw(stateObjectDel.value))
+  const { data, key, nk } = toRaw(stateObjectDel.value)
+  // AJAX delete
+  deptDataRender.value[key].nodes.splice(nk, 1)
+  console.log('ajax', {
+    request_id: '',
+    operator_id: '1c38e7c3-1af7-4fe5-a878-a57fddf141d6',
+    club_id: data.club_id,
+    dept_id: data.team_id
+  })
+  postDeptDelete({
+    request_id: '',
+    operator_id: '1c38e7c3-1af7-4fe5-a878-a57fddf141d6',
+    club_id: data.club_id,
+    dept_id: data.team_id
+  }).then(res => {
+    if (res.club_id) {
+      AMessage.success('This is a success message!')
+    } else {
+      AMessage.error('This is a normal message!')
+    }
+  })
 }
 </script>
 <template>
@@ -160,8 +253,8 @@ const visibleNameCancel = () => {
         </li>
       </ul>
     </div>
-    <div class="dept-box">
-      <div class="inline-flex">
+    <div class="dept-box-warp">
+      <div class="inline-flex h-100%">
         <dept-item
           v-for="(item, index) in deptDataRender"
           :key="index"
@@ -172,6 +265,7 @@ const visibleNameCancel = () => {
           @showChildren="showChildren"
           @updateName="updateName"
           @stateOverlapping="stateOverlapping"
+          @openDel="openDel"
         />
       </div>
     </div>
@@ -182,6 +276,14 @@ const visibleNameCancel = () => {
     >
       <template #title> {{ $t('win.title_1') }} </template>
       <div>{{ $t('win.text_1') }}</div>
+    </a-modal>
+    <a-modal
+      v-model:visible="delVisibleShow"
+      @ok="delVisibleOk"
+      @cancel="delVisibleCancel"
+    >
+      <template #title> {{ $t('win.title_1') }} </template>
+      <div>{{ $t('win.text_2', { msg: delTxt }) }}</div>
     </a-modal>
   </div>
 </template>
@@ -199,12 +301,12 @@ const visibleNameCancel = () => {
 .header-txt ul li::marker {
   font-size: 12px;
 }
-.dept-box {
+.dept-box-warp {
   @apply bg-[var(--color-bg-1)] relative;
   border-radius: 6px;
   height: calc(100vh - 333px);
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.08);
   box-sizing: border-box;
-  overflow-y: scroll;
+  overflow-x: auto;
 }
 </style>

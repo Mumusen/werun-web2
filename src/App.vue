@@ -6,4 +6,8 @@ import { RouterView } from 'vue-router'
   <RouterView />
 </template>
 
-<style></style>
+<style>
+body,html {
+  font-family: 'Public Sans', sans-serif;
+}
+</style>

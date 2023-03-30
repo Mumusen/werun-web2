@@ -9,7 +9,7 @@
  * 2023-03-28 11:02:23
  */
 import request from '@/utils/http'
-import allDeptTree from './allDeptTree.json'
+// import allDeptTree from './allDeptTree.json'
 const Api = {
   Login: 'LoginByUsername',
   GetUser: 'Get',
@@ -73,17 +73,15 @@ export const getManagingClubs = function (dataObj) {
  * @param {*} dataObj
  * @returns
  */
-// export const getClubAllDeptTree = function (dataObj) {
-export const getClubAllDeptTree = function () {
-  return allDeptTree
-  // return request({
-  //   method: 'post',
-  //   data: dataObj,
-  //   headers: {
-  //     'X-RPCX-ServiceMethod': Api.GetClubAllDeptTree,
-  //     'X-RPCX-ServicePath': 'club-dept'
-  //   }
-  // })
+export const getClubAllDeptTree = function (dataObj) {
+  return request({
+    method: 'post',
+    data: dataObj,
+    headers: {
+      'X-RPCX-ServiceMethod': Api.GetClubAllDeptTree,
+      'X-RPCX-ServicePath': 'club-dept'
+    }
+  })
 }
 
 /**

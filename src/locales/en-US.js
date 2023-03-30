@@ -23,6 +23,6 @@ export default {
     title_1: 'Warning',
     text_1: 'Do you want to commit the changed content?',
     text_2:
-      'Department “Web Devs” and all its sub departments will be removed. Do you want to proceed?'
+      'Department “{msg}” and all its sub departments will be removed. Do you want to proceed?'
   }
 }
