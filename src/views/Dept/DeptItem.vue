@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-29 17:06:45
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-30 18:25:02
+ * @LastEditTime : 2023-03-31 11:41:14
  * @FilePath     : /src/views/Dept/DeptItem.vue
  * @Description  : 部门组件
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -45,7 +45,7 @@ watchEffect(() => {
   const { deptData } = deptProps
   itemsData.value = deptData.nodes
   console.log('deptProps.stateNum', deptProps.stateNum)
-  // stateObj.value = {}
+  stateObj.value = {}
   addFlag.value = true
   itemsData.value.forEach((e, k) => {
     if (e.editState) {
@@ -110,6 +110,7 @@ const deptNameCheck = (row, k) => {
   // if (!row.oName) {}
   if (row.team_name === row.oName) {
     row.editState = 0
+    stateObj.value = {}
   } else {
     emit('updateName', {
       data: row,
@@ -119,32 +120,72 @@ const deptNameCheck = (row, k) => {
   }
 }
 const deptNameTab = (row, k) => {
-  console.log('stateObj.value', stateObj.value)
+  // 1.当前是否有已打开的输入框
+  // Y: 弹窗提示 N：打开输入框-set
+  // 2.弹窗提示：
+  //  2.1.是否修改
+  //  Y：修改并提交AJAX，打开新的输入框-set
+  //  N：恢复旧值，并打开新的输入框-set
+  // console.log('deptNameTab', stateObj.value)
   if (!stateObj.value.team_name) {
+    console.log('open input')
     row.editState = 1
     stateObj.value = row
     stateObjNk.value = k
-    console.log('stateObj', stateObj)
   } else {
-    console.log('row', row)
-    const { team_name, oName } = toRaw(row)
-    console.log('team_name, oName', team_name, oName)
-    if (stateObj.value.team_name === stateObj.value.oName) {
-      row.editState = 1
-      itemsData.value[stateObjNk.value].editState = 0
-      stateObj.value = row
-      stateObjNk.value = k
-    } else {
-      const obj = {
-        data: toRaw(stateObj.value),
-        nData: toRaw(row),
-        k,
-        key: deptProps.deptKey,
-        nk: stateObjNk.value
+    const { team_id } = toRaw(row)
+    console.log('xxx', team_id, stateObj.value.team_id)
+    if (team_id !== stateObj.value.team_id) {
+      console.log('不想等-弹窗')
+      if (stateObj.value.team_name === stateObj.value.oName) {
+        itemsData.value[stateObjNk.value].editState = 0
+        itemsData.value[stateObjNk.value].editShow = false
+        row.editState = 1
+        stateObj.value = row
+        stateObjNk.value = k
+      } else {
+        const obj = {
+          data: toRaw(stateObj.value),
+          nData: toRaw(row),
+          k,
+          key: deptProps.deptKey,
+          nk: stateObjNk.value
+        }
+        emit('stateOverlapping', obj)
       }
-      emit('stateOverlapping', obj)
     }
+    // if (stateObj.value.team_name === row.oName) {
+    //   console.log('2.1-Y')
+
+    // } else {
+    //   console.log('2.1-N')
+    // }
   }
+  // if (!stateObj.value.team_name) {
+  //   row.editState = 1
+  //   stateObj.value = row
+  //   stateObjNk.value = k
+  //   console.log('stateObj', stateObj)
+  // } else {
+  //   console.log('row', row)
+  //   const { team_id, oName } = toRaw(row)
+  //   console.log('team_name, oName', team_id, oName)
+  //   if (team_id === stateObj.value.team_id) {
+  //     row.editState = 1
+  //     itemsData.value[stateObjNk.value].editState = 0
+  //     stateObj.value = row
+  //     stateObjNk.value = k
+  //   } else {
+  //     const obj = {
+  //       data: toRaw(stateObj.value),
+  //       nData: toRaw(row),
+  //       k,
+  //       key: deptProps.deptKey,
+  //       nk: stateObjNk.value
+  //     }
+  //     emit('stateOverlapping', obj)
+  //   }
+  // }
 }
 const deptDel = (row, k) => {
   emit('openDel', {
@@ -191,11 +232,11 @@ const deptDel = (row, k) => {
           }}</span>
           <template v-if="deptItem.editShow">
             <div class="h-100% flex justify-center items-center">
-              <icon-ri:edit-box-line
+              <icon-tabler-edit
                 class="text-20px color-#746CE8"
                 @click="deptNameTab(deptItem, index)"
               />
-              <icon-ri:delete-bin-6-line
+              <icon-tabler-trash
                 class="text-20px color-#746CE8"
                 @click="deptDel(deptItem, index)"
               />
@@ -230,6 +271,7 @@ const deptDel = (row, k) => {
 .dept-box-min {
   padding-top: 10px;
   flex-grow: 2;
+  overflow: auto;
 }
 .dept-box-item {
   cursor: pointer;

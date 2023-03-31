@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-24 16:18:46
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-30 18:30:57
+ * @LastEditTime : 2023-03-31 11:31:29
  * @FilePath     : /src/views/Dept/index.vue
  * @Description  : Dept
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -79,8 +79,15 @@ const arrTo = arr => {
 const showChildren = key => {
   console.log('key', key)
   console.log(toRaw(deptDataRender.value), toRaw(deptDataRender.value[key]))
-  deptDataRender.value[key].nodes.forEach(e => {
+  deptDataRender.value[key].nodes.forEach((e, k) => {
     e.selectFlag = false
+    if (e.team_id && e.editShow && e.team_name !== e.oName) {
+      updateName({
+        data: e,
+        key: key,
+        nk: k
+      })
+    }
   })
   deptDataRender.value.splice(key + 1, deptDataRender.value.length - 1)
 }
@@ -156,6 +163,7 @@ const updateName = row => {
       if (res.dept && res.dept.create_time) {
         deptDataRender.value[key].nodes[nk].oName = data.team_name
         deptDataRender.value[key].nodes[nk].editState = 0
+        stateNum.value++
         AMessage.success('This is a success message!')
       } else {
         AMessage.error('This is a normal message!')
