@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-24 16:18:46
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-31 11:31:29
+ * @LastEditTime : 2023-03-31 11:48:42
  * @FilePath     : /src/views/Dept/index.vue
  * @Description  : Dept
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -81,12 +81,17 @@ const showChildren = key => {
   console.log(toRaw(deptDataRender.value), toRaw(deptDataRender.value[key]))
   deptDataRender.value[key].nodes.forEach((e, k) => {
     e.selectFlag = false
-    if (e.team_id && e.editShow && e.team_name !== e.oName) {
-      updateName({
-        data: e,
-        key: key,
-        nk: k
-      })
+    if (e.team_id && e.editShow) {
+      if (e.team_name !== e.oName) {
+        updateName({
+          data: e,
+          key: key,
+          nk: k
+        })
+      } else {
+        e.editShow = false
+        e.editState = 0
+      }
     }
   })
   deptDataRender.value.splice(key + 1, deptDataRender.value.length - 1)
