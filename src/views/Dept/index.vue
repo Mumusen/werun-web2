@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-24 16:18:46
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-31 11:48:42
+ * @LastEditTime : 2023-03-31 16:43:30
  * @FilePath     : /src/views/Dept/index.vue
  * @Description  : Dept
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -18,7 +18,6 @@ import {
 } from '@/api/dept'
 // import deptJson from './dept.json'
 const deptDataRender = ref([])
-// const deptDataInit = ref(null)
 const visibleNameShow = ref(false)
 const stateObject = ref({})
 const stateNum = ref(0)
@@ -32,14 +31,27 @@ onMounted(async () => {
     request_id: ''
   })
 })
+// 监听盒子宽度变化
+// watch(
+//   () => stateNum.value,
+//   () => {
+//     nextTick(function () {
+//       const deptWarp = document.getElementById('deptWarp')
+//       const deptScroll = document.getElementById('deptScroll')
+//       if (deptWarp && deptScroll) {
+//         const num = deptScroll.clientWidth - deptWarp.clientWidth
+//         if (num > 0) {
+//           // deptScroll.scrollLeft = num
+//         }
+//       }
+//     })
+//   }
+// )
+
 // // 获取下级部门 - API
 const deptGetInit = row => {
   getClubAllDeptTree(row).then(res => {
-    console.log('allDeptTree', res)
     const { nodes, club } = res
-    console.log('club', club, nodes)
-    // let newArr = [{}]
-    // deptDataRender.value = newArr
     deptDataRender.value = [
       {
         club_id: club.id,
@@ -48,7 +60,6 @@ const deptGetInit = row => {
         nodes: toNewArr(nodes.nodes)
       }
     ]
-    console.log('deptDataRender', toRaw(deptDataRender.value))
   })
 }
 const openChildren = row => {
@@ -66,12 +77,14 @@ const openChildren = row => {
   }
   // 循环遍历选中样式
   arrTo(deptDataRender.value[key].nodes)
-  console.log('deptDataRender.value', row, deptDataRender.value)
   deptDataRender.value[key].nodes[nk].selectFlag = true
+  stateNum.value++
 }
 const arrTo = arr => {
   arr.forEach(e => {
     e.selectFlag = false
+    e.editShow = false
+    e.editState = 0
     if (e.nodes.length > 0) arrTo(e.nodes)
   })
 }
@@ -143,15 +156,9 @@ const updateName = row => {
       }
     })
   } else {
-    console.log('update', toRaw(data.value))
     deptDataRender.value[key].nodes[nk].oName = data.team_name
     deptDataRender.value[key].nodes[nk].editState = 0
     stateNum.value++
-    // openChildren({
-    //   data: data,
-    //   key: key,
-    //   nk
-    // })
     // Ajax
     postDeptUpdate({
       request_id: '',
@@ -267,8 +274,8 @@ const delVisibleOk = () => {
         </li>
       </ul>
     </div>
-    <div class="dept-box-warp">
-      <div class="inline-flex h-100%">
+    <div class="dept-box-warp" id="deptWarp">
+      <div class="h-100% dept-scrrol">
         <dept-item
           v-for="(item, index) in deptDataRender"
           :key="index"
@@ -321,6 +328,9 @@ const delVisibleOk = () => {
   height: calc(100vh - 333px);
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.08);
   box-sizing: border-box;
-  overflow-x: auto;
+  overflow-x: scroll;
+}
+.dept-scrrol {
+  display: inline-flex;
 }
 </style>

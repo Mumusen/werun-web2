@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-29 17:06:45
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-31 11:41:14
+ * @LastEditTime : 2023-03-31 14:12:21
  * @FilePath     : /src/views/Dept/DeptItem.vue
  * @Description  : 部门组件
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -245,7 +245,9 @@ const deptDel = (row, k) => {
         </div>
       </div>
       <template v-if="itemsData.length === 0">
-        <div class="p-20px">No department yet</div>
+        <div class="h-100% flex justify-center items-center">
+          No department yet
+        </div>
       </template>
     </div>
     <div class="p-20px">
@@ -269,7 +271,6 @@ const deptDel = (row, k) => {
   text-align: center;
 }
 .dept-box-min {
-  padding-top: 10px;
   flex-grow: 2;
   overflow: auto;
 }
@@ -278,6 +279,9 @@ const deptDel = (row, k) => {
   display: flex;
   padding: 0 16px 0 22px;
   border-left: 2px solid transparent;
+}
+.dept-box-item:first-child {
+  margin-top: 10px;
 }
 .dept-box-item:hover,
 .dept-box-item:hover .dept-box-item-ico,
