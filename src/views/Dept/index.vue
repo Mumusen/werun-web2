@@ -188,6 +188,7 @@ const visibleNameCancel = () => {
   const { data, key, k, nk } = toRaw(stateObject.value)
   deptDataRender.value[key].nodes[nk].team_name = data.oName
   deptDataRender.value[key].nodes[nk].editState = 0
+  deptDataRender.value[key].nodes[nk].editShow = false
   deptDataRender.value[key].nodes[k].editState = 1
 }
 // 删除部门逻辑

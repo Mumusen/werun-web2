@@ -11,5 +11,6 @@ let switchLayoutList = []
 for (const path in modules) {
   switchLayoutList.push(modules[path].default)
 }
+console.log('switchLayoutList', switchLayoutList);
 
 export default switchLayoutList

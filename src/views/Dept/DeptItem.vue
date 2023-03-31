@@ -45,8 +45,14 @@ watchEffect(() => {
   const { deptData } = deptProps
   itemsData.value = deptData.nodes
   console.log('deptProps.stateNum', deptProps.stateNum)
-  stateObj.value = {}
+  // stateObj.value = {}
   addFlag.value = true
+  itemsData.value.forEach((e, k) => {
+    if (e.editState) {
+      stateObj.value = e
+      stateObjNk.value = k
+    }
+  })
 })
 // 空白区域交互，通知父，关闭子
 const outSideClick = ev => {
@@ -83,7 +89,7 @@ const addItemClick = () => {
     editShowFlag: true,
     selectFlag: false,
     nId: '21:157:158'
-  });
+  })
   addFlag.value = false
 }
 
@@ -113,21 +119,31 @@ const deptNameCheck = (row, k) => {
   }
 }
 const deptNameTab = (row, k) => {
+  console.log('stateObj.value', stateObj.value)
   if (!stateObj.value.team_name) {
     row.editState = 1
     stateObj.value = row
     stateObjNk.value = k
     console.log('stateObj', stateObj)
   } else {
-    const obj = {
-      data: toRaw(stateObj.value),
-      nData: toRaw(row),
-      k,
-      key: deptProps.deptKey,
-      nk: stateObjNk.value
+    console.log('row', row)
+    const { team_name, oName } = toRaw(row)
+    console.log('team_name, oName', team_name, oName)
+    if (stateObj.value.team_name === stateObj.value.oName) {
+      row.editState = 1
+      itemsData.value[stateObjNk.value].editState = 0
+      stateObj.value = row
+      stateObjNk.value = k
+    } else {
+      const obj = {
+        data: toRaw(stateObj.value),
+        nData: toRaw(row),
+        k,
+        key: deptProps.deptKey,
+        nk: stateObjNk.value
+      }
+      emit('stateOverlapping', obj)
     }
-    console.log('obj', obj)
-    emit('stateOverlapping', obj)
   }
 }
 const deptDel = (row, k) => {
@@ -163,15 +179,13 @@ const deptDel = (row, k) => {
           </div>
           <a-input
             v-if="deptItem.editState"
+            style="height: 22px"
             v-model="deptItem.team_name"
             :default-value="deptItem.team_name"
             @press-enter="deptNameCheck(deptItem, index)"
           />
         </div>
-        <div
-          class="dept-box-item-r text-right"
-          v-if="!deptItem.editState"
-        >
+        <div class="dept-box-item-r text-right" v-if="!deptItem.editState">
           <span v-show="!deptItem.editShow && !deptItem.editState">{{
             deptItem.nodes.length || ''
           }}</span>

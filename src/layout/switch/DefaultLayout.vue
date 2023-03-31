@@ -11,9 +11,9 @@
 <script>
 import IconRiLayout5Fill from '~icons/ri/layout-5-fill'
 export default {
-  name: 'SidebarLayout',
+  name: 'DefaultLayout',
   icon: IconRiLayout5Fill,
-  lang: 'sidebarLayout'
+  lang: 'defaultLayout'
 }
 </script>
 
