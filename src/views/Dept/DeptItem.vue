@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-29 17:06:45
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-31 14:12:21
+ * @LastEditTime : 2023-03-31 18:35:22
  * @FilePath     : /src/views/Dept/DeptItem.vue
  * @Description  : 部门组件
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -14,7 +14,11 @@ const deptProps = defineProps(['deptData', 'deptKey', 'stateNum'])
 const itemsData = ref([])
 const stateObj = ref({})
 const stateObjNk = ref(null)
+const stateSelect = ref(null)
 const addFlag = ref(true)
+const addObj = ref({
+  show: false
+})
 onMounted(() => {
   const { deptData } = deptProps
   itemsData.value = deptData.nodes
@@ -28,9 +32,11 @@ const emit = defineEmits([
   'openDel'
 ])
 const openChildren = (row, key) => {
+  stateSelect.value = false
   itemsData.value.forEach(e => {
     if (e.nId === row.nId) {
       e.selectFlag = true
+      stateSelect.value = e
     } else {
       e.selectFlag = false
     }
@@ -46,13 +52,19 @@ watchEffect(() => {
   itemsData.value = deptData.nodes
   console.log('deptProps.stateNum', deptProps.stateNum)
   stateObj.value = {}
-  addFlag.value = true
+  addObj.value = {
+    show: false
+  }
+  addFlag.value = false
+  let addF = false
   itemsData.value.forEach((e, k) => {
     if (e.editState) {
       stateObj.value = e
       stateObjNk.value = k
+      addF = true
     }
   })
+  if (!addF) addFlag.value = true
 })
 // 空白区域交互，通知父，关闭子
 const outSideClick = ev => {
@@ -65,31 +77,37 @@ const addItemClick = () => {
   const { deptData } = deptProps
   console.log('deptData', deptData)
   const { club_id, team_id, nodes } = deptData
-  nodes.push({
-    club_id: club_id,
-    nodes: [],
-    parent_id: team_id,
-    // team_id: team_id,
-    team_name: 'New Dept',
-    oName: '',
-    editShow: false,
-    editState: 1,
-    editShowFlag: true,
-    selectFlag: false,
-    nId: '21:157:158'
-  })
-  console.log('add', {
-    club_id: club_id,
-    nodes: [],
-    parent_id: team_id,
-    team_name: 'New Dept',
-    oName: '',
-    editShow: false,
-    editState: 1,
-    editShowFlag: true,
-    selectFlag: false,
-    nId: '21:157:158'
-  })
+  if (!addFlag.value) return
+  if (stateSelect.value) {
+    nodes.push({
+      club_id: club_id,
+      nodes: [],
+      parent_id: team_id,
+      // team_id: team_id,
+      team_name: 'New Dept',
+      oName: '',
+      editShow: false,
+      editState: 1,
+      editShowFlag: true,
+      selectFlag: false,
+      nId: `${club_id}:${team_id}`
+    })
+  } else {
+    addObj.value = {
+      show: true,
+      club_id: club_id,
+      nodes: [],
+      parent_id: team_id,
+      // team_id: team_id,
+      team_name: 'New Dept',
+      oName: '',
+      editShow: false,
+      editState: 1,
+      editShowFlag: true,
+      selectFlag: false,
+      nId: `${club_id}:${team_id}`
+    }
+  }
   addFlag.value = false
 }
 
@@ -220,6 +238,7 @@ const deptDel = (row, k) => {
           </div>
           <a-input
             v-if="deptItem.editState"
+            autofocus
             style="height: 22px"
             v-model="deptItem.team_name"
             :default-value="deptItem.team_name"
@@ -228,7 +247,7 @@ const deptDel = (row, k) => {
         </div>
         <div class="dept-box-item-r text-right" v-if="!deptItem.editState">
           <span v-show="!deptItem.editShow && !deptItem.editState">{{
-            deptItem.nodes.length || ''
+            deptItem.count || ''
           }}</span>
           <template v-if="deptItem.editShow">
             <div class="h-100% flex justify-center items-center">
@@ -251,9 +270,22 @@ const deptDel = (row, k) => {
       </template>
     </div>
     <div class="p-20px">
-      <a-button type="outline" long @click="addItemClick" :disabled="!addFlag"
+      <a-button
+        type="outline"
+        v-if="!addObj.show"
+        long
+        @click="addItemClick"
+        :disabled="!addFlag"
         >+ New Dept.</a-button
       >
+      <a-input
+        v-if="addObj.show"
+        autofocus
+        style="height: 22px"
+        v-model="addObj.team_name"
+        :default-value="addObj.team_name"
+        @press-enter="deptNameCheck(addObj, 'add')"
+      />
     </div>
   </div>
 </template>

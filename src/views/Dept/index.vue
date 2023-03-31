@@ -2,7 +2,7 @@
  * @Author       : linxiao
  * @Date         : 2023-03-24 16:18:46
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-31 16:43:30
+ * @LastEditTime : 2023-03-31 18:44:33
  * @FilePath     : /src/views/Dept/index.vue
  * @Description  : Dept
  * Copyright 2023 OBKoro1, All Rights Reserved. 
@@ -81,11 +81,13 @@ const openChildren = row => {
   stateNum.value++
 }
 const arrTo = arr => {
-  arr.forEach(e => {
+  arr.forEach((e, k) => {
     e.selectFlag = false
     e.editShow = false
     e.editState = 0
-    if (e.nodes.length > 0) arrTo(e.nodes)
+    if (!e.team_id) arr.splice(k, 1)
+    e.count = e.nodes.length
+    if (e.nodes.length > 0) arrTo(e.nodes, name)
   })
 }
 // 关闭子级
@@ -118,6 +120,7 @@ const toNewArr = arr => {
     e.selectFlag = false
     e.nId = `${e.club_id}:${e.parent_id}:${e.team_id}`
     e.oName = e.team_name
+    e.count = e.nodes.length
     if (e.nodes.length > 0) {
       toNewArr(e.nodes)
     }
@@ -127,7 +130,7 @@ const toNewArr = arr => {
 // 修改名称
 const updateName = row => {
   const { data, key, nk } = row
-  if (!data.oName) {
+  if (!data.oName || nk === 'add') {
     // Add AJAX
     const ajaxData = {
       request_id: '',
@@ -139,20 +142,44 @@ const updateName = row => {
         data_body: ''
       }
     }
+    console.log('ajaxData', ajaxData)
     postDeptCreate(ajaxData).then(res => {
       if (res && res.data) {
-        const { parent_id, id } = res.data
+        const { parent_id, id, club_id, name } = res.data
         deptLoading.value = true
-        deptDataRender.value[key].nodes[nk].oName = data.team_name
-        deptDataRender.value[key].nodes[nk].team_id = id
-        deptDataRender.value[key].nodes[nk].parent_id = parent_id
-        deptDataRender.value[key].nodes[nk].editState = 0
-        stateNum.value++
-        openChildren({
-          data: deptDataRender.value[key].nodes[nk],
-          key: key,
-          nk
-        })
+        deptDataRender.value[key].count = deptDataRender.value[key].nodes.length
+        if (nk === 'add') {
+          const newData = {
+            club_id: club_id,
+            nodes: [],
+            parent_id: parent_id,
+            team_id: id,
+            team_name: name,
+            oName: name,
+            editShow: false,
+            editState: 0,
+            editShowFlag: false,
+            selectFlag: false,
+            nId: `${club_id}:${parent_id}:${id}`
+          }
+          deptDataRender.value[key].nodes.push(newData)
+          openChildren({
+            data: newData,
+            key: key,
+            nk: deptDataRender.value[key].nodes.length - 1
+          })
+        } else {
+          deptDataRender.value[key].nodes[nk].oName = data.team_name
+          deptDataRender.value[key].nodes[nk].team_id = id
+          deptDataRender.value[key].nodes[nk].parent_id = parent_id
+          deptDataRender.value[key].nodes[nk].editState = 0
+          stateNum.value++
+          openChildren({
+            data: deptDataRender.value[key].nodes[nk],
+            key: key,
+            nk
+          })
+        }
       }
     })
   } else {
@@ -228,16 +255,8 @@ const delVisibleCancel = () => {
   stateObjectDel.value = {}
 }
 const delVisibleOk = () => {
-  console.log('stateObjectDel', toRaw(stateObjectDel.value))
   const { data, key, nk } = toRaw(stateObjectDel.value)
   // AJAX delete
-  deptDataRender.value[key].nodes.splice(nk, 1)
-  console.log('ajax', {
-    request_id: '',
-    operator_id: '1c38e7c3-1af7-4fe5-a878-a57fddf141d6',
-    club_id: data.club_id,
-    dept_id: data.team_id
-  })
   postDeptDelete({
     request_id: '',
     operator_id: '1c38e7c3-1af7-4fe5-a878-a57fddf141d6',
@@ -245,6 +264,8 @@ const delVisibleOk = () => {
     dept_id: data.team_id
   }).then(res => {
     if (res.club_id) {
+      deptDataRender.value[key].nodes.splice(nk, 1)
+      deptDataRender.value[key].count = deptDataRender.value[key].nodes.length
       AMessage.success('This is a success message!')
     } else {
       AMessage.error('This is a normal message!')
