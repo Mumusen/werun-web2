@@ -16,3 +16,8 @@
 .arco-menu-light .arco-menu-item.arco-menu-selected .arco-menu-icon {
   color: #fff !important;
 }
+
+.arco-input-wrapper {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}

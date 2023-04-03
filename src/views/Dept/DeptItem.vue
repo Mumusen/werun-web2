@@ -2,14 +2,29 @@
  * @Author       : linxiao
  * @Date         : 2023-03-29 17:06:45
  * @LastEditors  : linxiao
- * @LastEditTime : 2023-03-31 18:35:22
+ * @LastEditTime : 2023-04-03 10:55:32
  * @FilePath     : /src/views/Dept/DeptItem.vue
  * @Description  : 部门组件
  * Copyright 2023 OBKoro1, All Rights Reserved. 
  * 2023-03-29 17:06:45
 -->
+<script>
+export default {
+  directives: {
+    focus: {
+      mounted(el) {
+        el.children[0].focus()
+      }
+    },
+    inputSelect: {
+      mounted(el) {
+        el.children[0].select()
+      }
+    }
+  }
+}
+</script>
 <script setup>
-// 接收数据
 const deptProps = defineProps(['deptData', 'deptKey', 'stateNum'])
 const itemsData = ref([])
 const stateObj = ref({})
@@ -55,7 +70,7 @@ watchEffect(() => {
   addObj.value = {
     show: false
   }
-  addFlag.value = false
+  // addFlag.value = false
   let addF = false
   itemsData.value.forEach((e, k) => {
     if (e.editState) {
@@ -71,56 +86,75 @@ const outSideClick = ev => {
   if (!ev.target.closest('.dept-box-item')) {
     emit('showChildren', deptProps.deptKey)
   }
+  // 关闭底部
+  if (addObj.value.show) {
+    console.log('addObj.value', addObj.value)
+    addObj.value = {
+      show: false
+    }
+    addFlag.value = true
+  }
 }
 // 新增
 const addItemClick = () => {
+  // 当前层级是否有部门选中，如有选中则
   const { deptData } = deptProps
-  console.log('deptData', deptData)
+  console.log('deptData', deptData, stateSelect)
   const { club_id, team_id, nodes } = deptData
-  if (!addFlag.value) return
-  if (stateSelect.value) {
-    nodes.push({
-      club_id: club_id,
-      nodes: [],
-      parent_id: team_id,
-      // team_id: team_id,
-      team_name: 'New Dept',
-      oName: '',
-      editShow: false,
-      editState: 1,
-      editShowFlag: true,
-      selectFlag: false,
-      nId: `${club_id}:${team_id}`
-    })
-  } else {
-    addObj.value = {
-      show: true,
-      club_id: club_id,
-      nodes: [],
-      parent_id: team_id,
-      // team_id: team_id,
-      team_name: 'New Dept',
-      oName: '',
-      editShow: false,
-      editState: 1,
-      editShowFlag: true,
-      selectFlag: false,
-      nId: `${club_id}:${team_id}`
-    }
-  }
+  nodes.push({
+    club_id: club_id,
+    nodes: [],
+    parent_id: team_id,
+    // team_id: team_id,
+    team_name: 'New Dept',
+    oName: '',
+    editShow: false,
+    editState: 1,
+    editShowFlag: true,
+    selectFlag: false,
+    nId: '21:157:158'
+  })
   addFlag.value = false
+  // if (!addFlag.value) return
+  // if (stateSelect.value) {
+  //   nodes.push({
+  //     club_id: club_id,
+  //     nodes: [],
+  //     parent_id: team_id,
+  //     // team_id: team_id,
+  //     team_name: 'New Dept',
+  //     oName: '',
+  //     editShow: false,
+  //     editState: 1,
+  //     editShowFlag: true,
+  //     selectFlag: false,
+  //     nId: `${club_id}:${team_id}`
+  //   })
+  // } else {
+  //   addObj.value = {
+  //     show: true,
+  //     club_id: club_id,
+  //     nodes: [],
+  //     parent_id: team_id,
+  //     // team_id: team_id,
+  //     team_name: 'New Dept',
+  //     oName: '',
+  //     editShow: false,
+  //     editState: 1,
+  //     editShowFlag: true,
+  //     selectFlag: false,
+  //     nId: `${club_id}:${team_id}`
+  //   }
+  // }
+  // addFlag.value = false
 }
 
 // 按钮显示 隐藏
 const itemMouseenter = row => {
-  if (row.editState) return
-  row.editShow = true
-  return
+  if (!row.editShow) row.editShow = true
 }
 const itemMouseleave = row => {
-  if (row.editState) return
-  row.editShow = false
-  return
+  if (row.editShow) row.editShow = false
 }
 // 提交名称
 const deptNameCheck = (row, k) => {
@@ -137,6 +171,7 @@ const deptNameCheck = (row, k) => {
     })
   }
 }
+// 点击编辑按钮
 const deptNameTab = (row, k) => {
   // 1.当前是否有已打开的输入框
   // Y: 弹窗提示 N：打开输入框-set
@@ -172,38 +207,7 @@ const deptNameTab = (row, k) => {
         emit('stateOverlapping', obj)
       }
     }
-    // if (stateObj.value.team_name === row.oName) {
-    //   console.log('2.1-Y')
-
-    // } else {
-    //   console.log('2.1-N')
-    // }
   }
-  // if (!stateObj.value.team_name) {
-  //   row.editState = 1
-  //   stateObj.value = row
-  //   stateObjNk.value = k
-  //   console.log('stateObj', stateObj)
-  // } else {
-  //   console.log('row', row)
-  //   const { team_id, oName } = toRaw(row)
-  //   console.log('team_name, oName', team_id, oName)
-  //   if (team_id === stateObj.value.team_id) {
-  //     row.editState = 1
-  //     itemsData.value[stateObjNk.value].editState = 0
-  //     stateObj.value = row
-  //     stateObjNk.value = k
-  //   } else {
-  //     const obj = {
-  //       data: toRaw(stateObj.value),
-  //       nData: toRaw(row),
-  //       k,
-  //       key: deptProps.deptKey,
-  //       nk: stateObjNk.value
-  //     }
-  //     emit('stateOverlapping', obj)
-  //   }
-  // }
 }
 const deptDel = (row, k) => {
   emit('openDel', {
@@ -228,18 +232,19 @@ const deptDel = (row, k) => {
         @mouseleave="itemMouseleave(deptItem)"
       >
         <div class="dept-box-item-l">
+          <i class="dept-box-item-ico"></i>
           <div
             v-show="!deptItem.editState"
             class="dept-box-item-name"
             @click="openChildren(deptItem, index)"
           >
-            <i class="dept-box-item-ico"></i>
             {{ deptItem.team_name }}
           </div>
           <a-input
             v-if="deptItem.editState"
-            autofocus
-            style="height: 22px"
+            v-focus
+            v-inputSelect
+            style="width: 190px; height: 22px"
             v-model="deptItem.team_name"
             :default-value="deptItem.team_name"
             @press-enter="deptNameCheck(deptItem, index)"
@@ -280,7 +285,7 @@ const deptDel = (row, k) => {
       >
       <a-input
         v-if="addObj.show"
-        autofocus
+        v-focus
         style="height: 22px"
         v-model="addObj.team_name"
         :default-value="addObj.team_name"
